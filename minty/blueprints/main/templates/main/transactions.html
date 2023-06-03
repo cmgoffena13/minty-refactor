@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+
+{% block app_content %}
+    {% if account_name_header %}
+        <h1>Transactions - {{ account_name_header }}</h1>
+    {% elif q %}
+        <h1>Search Results</h1>
+    {% else %}
+        <h1> Transactions - All</h1>
+    {% endif %}
+    <br>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <!--<th scope="col">TransactionID</th>-->
+            <th scope="col">Transaction Date</th>
+            {% if not account_name_header %}
+            <th scope="col">Account Name</th>
+            {% endif %}
+            <th scope="col">Description</th>
+            <th scope="col">Amount</th>
+            <!--<th scope="col">IsDebit</th>-->
+            <th scope="col">Category</th>
+        </thead>
+    {% for transaction, form in transaction_data %}
+        {% include 'main/_transaction.html' %}
+    {% endfor %}
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif%}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span>Newer Transactions
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older Transactions<span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+{% endblock %}

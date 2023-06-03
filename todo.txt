@@ -1,0 +1,18 @@
+1. As a user, I need to be able to refresh the mint data asynchronously through the browser. (setup synchronious)
+    1. This will require Redis and rq workers. 
+    2. Tasks table and understanding interaction.
+    3. Docker-Compose file needed.
+2. As a user, I need to know the custom category total amounts for the latest pay period. Pie chart? i know i know
+3. As a user, I need the previous pay period in the line chart as well for comparison.
+4. As a user, I want page links at the bottom of the transaction page. Ex. Page 1 | Page 2 | Page 3 etc.
+5. As a programmer, I need to explore more Javascript.
+    1. How do I create interactive graphs? Chart.js, maybe Plotly?
+    2. Investigate use-cases for Javascript.
+8. As a programmer, I need to write tests BAD. get on it. ChatGPT that to get a start.
+    1. Have a good idea of it. Need to follow up on the issues with Postgres.
+9. As a programmer, I need to setup github hooks for black and isort for CI. Higher priority, but debugging is gonna be tough.
+10. As a programmer, I need to investigate searching for transactions by date as well. 
+    Question: Can I include in search bar or need a date picker?
+11. As a programmer, I need to add in a step to the init_app to load the setup postgres scripts and run them on app start. 
+    Benefit: Will ease initial setup and keep the postgres code in source control.
+    Problem: Can't use sqlite for testdb then...

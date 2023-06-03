@@ -1,0 +1,20 @@
+{% extends "layouts/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+{% block app_content %}
+    <div>
+        <h1>Latest Pay Period</h1>
+        <canvas id="pay_period_line_graph" width="400" height="100"></canvas>
+    </div>
+    <br>
+{% endblock %}
+
+
+{% block app_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/pay_period_line_graph.js') }}"></script>
+<script type="text/javascript">
+    const url = {{ url_for('main.pay_period' ) | tojson }}
+    createPayPeriodLineGraph(url);
+</script>
+{% endblock %}

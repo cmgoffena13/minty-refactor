@@ -1,0 +1,9 @@
+<tbody>
+<tr>
+    <th scope="Row"><a href="{{ url_for('main.account_transactions', account_id=account.account_id) }}">{{ account.account_id }}</a></th>
+    <td>{{ account.account_name | limit_characters }}</td>
+    <td>{{ account.financial_institution_name | limit_characters }}</td>
+    <td>{{ account.current_balance | format_currency }}</td>
+    <td>{{ account.mint_last_updated_on }}</td>
+</tr>
+</tbody>

@@ -1,0 +1,30 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<span>
+    <tbody>
+        <tr>
+            <!--<td>{{ transaction.transaction_id }}</td>-->
+            <td>{{ transaction.transaction_date }}</td>
+            {% if not account_name_header %}
+            <td>{{ transaction.account_name | limit_characters }}</td>
+            {% endif %}
+            <td>{{ transaction.transaction_description | limit_characters }}</td>
+            <td>{{ transaction.transaction_amount | format_currency }}</td>
+            <!--<td>{{ transaction.is_debit }}</td>-->
+            <td>
+                <form class="form-inline" method="POST">
+                    <div class="form-group">
+                        {{ form.category(class="form-control", prefix=transaction.transaction_id) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                    {{ form.transaction_id(value=transaction.transaction_id, type='hidden') }}
+
+                    <!--<input type="hidden" name="{{ transaction.transaction_id }}" value="{{ transaction.transaction_id }}">-->
+                    {{ form.hidden_tag() }}
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</span>

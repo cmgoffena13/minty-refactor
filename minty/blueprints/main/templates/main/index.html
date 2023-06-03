@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+
+{% block app_content %}
+    <div>
+        <h1>Monthly Statements</h1>
+        <canvas id="net_worth_line_graph" width="400" height="100"></canvas>
+    </div>
+    <br>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <th scope="col">Account ID</th>
+            <th scope="col">Account Name</th>
+            <th scope="col">Institution Name</th>
+            <th scope="col">Current Balance</th>
+            <th scope="col">Last Updated on Mint</th>
+        </thead>
+    {% for account in accounts %}
+        {% include 'main/_account.html' %}
+    {% endfor %}
+    </table>
+{% endblock %}
+
+{% block app_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/net_worth_line_graph.js') }}"></script>
+<script type="text/javascript">
+    const url = {{ url_for('main.net_worth' ) | tojson }}
+    createLineGraph(url);
+</script>
+{% endblock %}
