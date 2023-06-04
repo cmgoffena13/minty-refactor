@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
 
 from flask import (
     Blueprint,
@@ -57,11 +58,24 @@ def after_request(response):
 @main_bp.route("/", methods=["GET"])
 @main_bp.route("/index", methods=["GET"])
 def index():
+    #extensions = current_app.extensions
+    #print(extensions)
+    #obj = current_app._get_current_object()
+    #engine = SQLAlchemy().get_engine(current_app)
+    #print(engine)
+    flask_engines = db._app_engines
+    current = current_app
+    obj = current_app._get_current_object()
+    engines = db.engines
     accounts = get_accounts()
     return render_template(
         template_name_or_list="main/index.html",
         title="Home",
         accounts=accounts,
+        obj=obj,
+        engines=engines,
+        flask_engines=flask_engines,
+        current=current
     )
 
 
