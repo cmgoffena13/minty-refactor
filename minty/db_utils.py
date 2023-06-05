@@ -29,7 +29,8 @@ def get_latest_pay_period():
         """
         SELECT 
         date_actual, 
-        rolling_transactions_amounts,
+        rolling_transactions_amounts_p1,
+		rolling_transactions_amounts_p2,
         0 AS break_even
         FROM select_rolling_sum_time_periods() 
         ORDER BY date_actual ASC

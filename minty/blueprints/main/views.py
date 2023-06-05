@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from flask_sqlalchemy import SQLAlchemy
 
 from flask import (
     Blueprint,
@@ -12,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.record_queries import get_recorded_queries
 
 from minty.blueprints.main.forms import RefreshData, SearchForm
@@ -89,8 +89,11 @@ def pay_period():
     pay_period_data = [
         {
             "date_actual": pay_period.date_actual.strftime("%Y-%m-%d"),
-            "rolling_transactions_amounts": int(
-                pay_period.rolling_transactions_amounts
+            "rolling_transactions_amounts_p1": int(
+                pay_period.rolling_transactions_amounts_p1
+            ),
+            "rolling_transactions_amounts_p2": int(
+                pay_period.rolling_transactions_amounts_p2
             ),
             "break_even": int(pay_period.break_even),
         }

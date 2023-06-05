@@ -6,7 +6,7 @@ from flask import Flask
 
 from minty.blueprints.main import main_bp
 from minty.config.settings import FlaskConfig
-from minty.extensions import bootstrap, db, migrate, debug_toolbar
+from minty.extensions import bootstrap, db, debug_toolbar, migrate
 from minty.templates.filters import format_currency, limit_characters
 
 

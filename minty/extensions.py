@@ -1,8 +1,8 @@
 from flask_bootstrap import Bootstrap
+from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from flask_debugtoolbar import DebugToolbarExtension
 
 debug_toolbar = DebugToolbarExtension()
 migrate = Migrate()
