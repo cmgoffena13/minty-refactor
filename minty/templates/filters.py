@@ -16,8 +16,8 @@ def limit_characters(value):
     _value = None
     if not isinstance(value, str):
         raise TypeError("Value must be a string")
-    if len(value) > 60:
-        _value = value[:59] + "..."
+    if len(value) > 30:
+        _value = value[:29] + "..."
     else:
         _value = value
     return _value
