@@ -3,6 +3,7 @@ import os
 from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
+from flask_sqlalchemy.record_queries import get_recorded_queries
 
 from minty.blueprints.main import main_bp
 from minty.config.settings import FlaskConfig
@@ -20,6 +21,19 @@ def create_app(config_class=FlaskConfig):
     app.register_blueprint(blueprint=main_bp)
 
     extensions(app=app)
+
+    @app.after_request
+    def after_request(response):
+        if not app.debug and not app.testing:
+            for query in get_recorded_queries():
+                if query.duration >= app.config["FLASKY_SLOW_DB_QUERY_TIME"]:
+                    app.logger.warning(
+                        f"Query: {query.statement} \
+                                            \nParameters:{query.parameters} \
+                                            \nDuration:{query.duration} \
+                                            \nContext:{query.context}"
+                    )
+        return response
 
     if app.debug:
         app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False

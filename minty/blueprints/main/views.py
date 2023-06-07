@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from flask import (
     Blueprint,
-    current_app,
     flash,
     g,
     jsonify,
@@ -31,20 +30,6 @@ main_bp = Blueprint(name="main", import_name=__name__, template_folder="template
 @main_bp.before_app_request
 def before_request():
     g.search_form = SearchForm()
-
-
-@main_bp.after_app_request
-def after_request(response):
-    if not current_app.debug and not current_app.testing:
-        for query in get_recorded_queries():
-            if query.duration >= current_app.config["FLASKY_SLOW_DB_QUERY_TIME"]:
-                current_app.logger.warning(
-                    f"Query: {query.statement} \
-                                           \nParameters:{query.parameters} \
-                                           \nDuration:{query.duration} \
-                                           \nContext:{query.context}"
-                )
-    return response
 
 
 @main_bp.route("/", methods=["GET"])
