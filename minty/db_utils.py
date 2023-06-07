@@ -46,7 +46,8 @@ def get_latest_category_spending():
         """
         SELECT
         custom_category_name,
-        total_transaction_amount
+        total_transaction_amount_p1,
+        total_transaction_amount_p2
         FROM select_latest_category_spending()
         """
     )

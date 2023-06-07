@@ -51,8 +51,15 @@ def category_spending():
     category_spending_data = get_latest_category_spending()
     category_spending_data = [
         {
-            "category_name": str(category_spending.custom_category_name).replace('_',' '),
-            "total_transaction_amount": int(category_spending.total_transaction_amount),
+            "category_name": str(category_spending.custom_category_name).replace(
+                "_", " "
+            ),
+            "current_total_transaction_amount": int(
+                category_spending.total_transaction_amount_p1
+            ),
+            "previous_total_transaction_amount": int(
+                category_spending.total_transaction_amount_p2
+            ),
         }
         for category_spending in category_spending_data
     ]

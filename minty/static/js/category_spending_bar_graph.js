@@ -2,7 +2,8 @@ function createCategorySpendingBarGraph(url) {
     $.ajax(url)
       .done(function (category_spending_data) {
         const labels = category_spending_data.map((e) => e.category_name);
-        const transaction_totals = category_spending_data.map((e) => e.total_transaction_amount);
+        const current_transaction_totals = category_spending_data.map((e) => e.current_total_transaction_amount);
+        const previous_transaction_totals = category_spending_data.map((e) => e.previous_total_transaction_amount);
   
         const config = {
           type: "bar",
@@ -10,9 +11,13 @@ function createCategorySpendingBarGraph(url) {
             labels: labels,
             datasets: [
               {
-                label: "Total Spending",
-                data: transaction_totals,
+                label: "Current Spending",
+                data: current_transaction_totals,
               },
+              {
+                label: "Previous Spending",
+                data: previous_transaction_totals
+              }
             ],
           },
         };
