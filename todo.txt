@@ -1,4 +1,4 @@
-1. As a user, I need to be able to refresh the mint data asynchronously through the browser. (setup synchronious)
+1. As a user, I need to be able to refresh the mint data asynchronously through the browser. (synchronious is just a little too slow)
     1. This will require Redis and rq workers. 
     2. Tasks table and understanding interaction.
     3. Docker-Compose file needed.
