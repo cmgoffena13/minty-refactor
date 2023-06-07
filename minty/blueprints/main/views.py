@@ -10,7 +10,6 @@ from flask import (
     request,
     url_for,
 )
-from flask_sqlalchemy.record_queries import get_recorded_queries
 
 from minty.blueprints.main.forms import RefreshData, SearchForm
 from minty.blueprints.main.tasks import mint_pull
