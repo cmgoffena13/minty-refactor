@@ -17,13 +17,13 @@
 {% block app_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/pay_period_line_graph.js') }}"></script>
 <script type="text/javascript">
-    const pay_period_url = {{ url_for('main.pay_period') | tojson }}
+    const pay_period_url = {{ url_for('chart_data.pay_period') | tojson }}
     createPayPeriodLineGraph(pay_period_url);
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/category_spending_bar_graph.js') }}"></script>
 <script>
-    const category_spending_url = {{ url_for('main.category_spending') | tojson }}
+    const category_spending_url = {{ url_for('chart_data.category_spending') | tojson }}
     createCategorySpendingBarGraph(category_spending_url)
 </script>
 {% endblock %}

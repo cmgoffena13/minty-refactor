@@ -24,7 +24,7 @@
 {% block app_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/net_worth_line_graph.js') }}"></script>
 <script type="text/javascript">
-    const url = {{ url_for('main.net_worth' ) | tojson }}
+    const url = {{ url_for('chart_data.net_worth' ) | tojson }}
     createLineGraph(url);
 </script>
 {% endblock %}

@@ -5,6 +5,7 @@ from logging.handlers import TimedRotatingFileHandler
 from flask import Flask
 from flask_sqlalchemy.record_queries import get_recorded_queries
 
+from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
 from minty.config.settings import FlaskConfig
 from minty.extensions import bootstrap, db, debug_toolbar, migrate
@@ -18,8 +19,7 @@ def create_app(config_class=FlaskConfig):
     app.jinja_env.filters["format_currency"] = format_currency
     app.jinja_env.filters["limit_characters"] = limit_characters
 
-    app.register_blueprint(blueprint=main_bp)
-
+    blueprints(app=app)
     extensions(app=app)
 
     @app.after_request
@@ -87,4 +87,10 @@ def extensions(app):
     db.init_app(app=app)
     migrate.init_app(app=app, db=db)
     bootstrap.init_app(app=app)
+    return None
+
+
+def blueprints(app):
+    app.register_blueprint(blueprint=main_bp)
+    app.register_blueprint(blueprint=chart_data_bp)
     return None
