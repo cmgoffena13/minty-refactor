@@ -8,7 +8,11 @@
             {% if not account_name_header %}
             <td>{{ transaction.account_name | limit_characters }}</td>
             {% endif %}
+            {% if not account_name_header %}
             <td>{{ transaction.transaction_description | limit_characters }}</td>
+            {% else %}
+            <td>{{ transaction.transaction_description }}</td>
+            {% endif %}
             <td>{{ transaction.transaction_amount | format_currency }}</td>
             <!--<td>{{ transaction.is_debit }}</td>-->
             <td>
