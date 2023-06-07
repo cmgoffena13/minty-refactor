@@ -11,7 +11,6 @@ load_dotenv(os.path.join(base_dir, ".flaskenv"))
 class MintProcessConfig(object):
     MINT_USERNAME = os.environ["MINT_USERNAME"]
     MINT_PASSWORD = os.environ["MINT_PASSWORD"]
-    CHROME_SESSION_PATH = os.environ["CHROME_SESSION_PATH"]
     MFA_TOKEN = os.environ["MFA_TOKEN"]
 
 

@@ -81,6 +81,8 @@ def all_transactions():
                 next_url=next_url,
                 prev_url=prev_url,
                 transaction_data=transaction_data,
+                transactions=transactions,
+                route="main.all_transactions",
             )
         )
 
@@ -90,12 +92,15 @@ def all_transactions():
         next_url=next_url,
         prev_url=prev_url,
         transaction_data=transaction_data,
+        transactions=transactions,
+        route="main.all_transactions",
     )
 
 
 @main_bp.route("/<int:account_id>/transactions", methods=["GET", "POST"])
 def account_transactions(account_id):
     page = request.args.get("page", 1, type=int)
+
     transactions = get_transactions(page=page, account_id=account_id)
 
     next_url = (
@@ -134,11 +139,14 @@ def account_transactions(account_id):
         return redirect(
             url_for(
                 "main.account_transactions",
+                account_name_header=account_name_header,
                 account_id=account_id,
                 page=page,
                 next_url=next_url,
                 prev_url=prev_url,
                 transaction_data=transaction_data,
+                transactions=transactions,
+                route="main.account_transactions",
             )
         )
 
@@ -146,16 +154,19 @@ def account_transactions(account_id):
         template_name_or_list="main/transactions.html",
         title="Transactions",
         account_name_header=account_name_header,
+        account_id=account_id,
         next_url=next_url,
         prev_url=prev_url,
         transaction_data=transaction_data,
+        transactions=transactions,
+        route="main.account_transactions",
     )
 
 
 @main_bp.route("/transactions/search", methods=["GET", "POST"])
 def all_transactions_search():
     if not g.search_form.validate():
-        return redirect(url_for("all_transactions"))
+        return redirect(url_for("main.all_transactions"))
 
     page = request.args.get("page", 1, type=int)
     transactions = get_transactions(page=page, search_data=g.search_form.q.data)
@@ -194,6 +205,8 @@ def all_transactions_search():
                 next_url=next_url,
                 prev_url=prev_url,
                 transaction_data=transaction_data,
+                transactions=transactions,
+                route="main.all_transactions_search",
             )
         )
 
@@ -204,4 +217,6 @@ def all_transactions_search():
         next_url=next_url,
         prev_url=prev_url,
         transaction_data=transaction_data,
+        transactions=transactions,
+        route="main.all_transactions_search",
     )

@@ -293,4 +293,3 @@ def mint_pull(date_filter, outside_web_app=True, full_load=False):
     # credit_data = mint.get_credit_report_data()
     # print(credit_data)
     mint.close()
-    
