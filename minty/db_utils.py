@@ -39,3 +39,16 @@ def get_latest_pay_period():
     resultset = db.session.execute(stmt)
     rows = resultset.fetchall()
     return rows
+
+def get_latest_category_spending():
+    stmt = text(
+        """
+        SELECT
+        custom_category_name,
+        total_transaction_amount
+        FROM select_latest_category_spending()
+        """
+    )
+    resultset = db.session.execute(stmt)
+    rows = resultset.fetchall()
+    return rows

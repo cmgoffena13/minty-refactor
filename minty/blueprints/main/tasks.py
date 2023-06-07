@@ -241,8 +241,9 @@ def _record_net_worth_data(mint):
 
 def mint_pull(date_filter, outside_web_app=True, full_load=False):
     current_app.logger.info(
-        f"Starting mint pull with inputs - date_filer: {date_filter}, full_load: {full_load}"
+        f"Starting mint pull with inputs - date_filter: {date_filter}, full_load: {full_load}"
     )
+    current_app.logger.info(f"Refreshing account data")
     mint = Mint(
         email=mint_config.MINT_USERNAME,
         password=mint_config.MINT_PASSWORD,
@@ -253,8 +254,6 @@ def mint_pull(date_filter, outside_web_app=True, full_load=False):
         wait_for_sync=True,
         wait_for_sync_timeout=300,
     )
-
-    current_app.logger.info(f"Refreshing account data")
     # mint.initiate_account_refresh()
 
     # if outside_web_app:

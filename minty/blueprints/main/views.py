@@ -11,7 +11,6 @@ from flask import (
     request,
     url_for,
 )
-from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.record_queries import get_recorded_queries
 
 from minty.blueprints.main.forms import RefreshData, SearchForm
@@ -22,7 +21,7 @@ from minty.blueprints.main.view_utils import (
     get_transactions,
     record_custom_category,
 )
-from minty.db_utils import get_latest_pay_period
+from minty.db_utils import get_latest_pay_period, get_latest_category_spending
 from minty.extensions import db
 from minty.models import Account, NetWorth
 
@@ -100,6 +99,20 @@ def pay_period():
         for pay_period in pay_period_data
     ]
     return jsonify(pay_period_data)
+
+
+@main_bp.route("/chart-data/category_spending")
+def category_spending():
+    category_spending_data = get_latest_category_spending()
+    category_spending_data = [
+        {
+            "category_name": str(category_spending.custom_category_name),
+            "total_transaction_amount": int(category_spending.total_transaction_amount)
+        }
+        for category_spending in category_spending_data
+    ]
+    return jsonify(category_spending_data)
+
 
 
 @main_bp.route("/refresh-data", methods=["GET", "POST"])
