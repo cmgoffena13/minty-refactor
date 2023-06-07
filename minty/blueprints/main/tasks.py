@@ -250,11 +250,9 @@ def mint_pull(date_filter, outside_web_app=True, full_load=False):
         headless=True,
         mfa_method="soft-token",
         mfa_token=mint_config.MFA_TOKEN,
-        # session_path=mint_config.CHROME_SESSION_PATH,
         wait_for_sync=True,
         wait_for_sync_timeout=300,
     )
-    # mint.initiate_account_refresh()
 
     # if outside_web_app:
     #    mint_pull_app = create_app(config_class=FlaskConfig)
@@ -295,8 +293,4 @@ def mint_pull(date_filter, outside_web_app=True, full_load=False):
     # credit_data = mint.get_credit_report_data()
     # print(credit_data)
     mint.close()
-
-
-# date_filter = "LAST_7_DAYS"
-# date_filter = "ALL_TIME"
-# mint_pull(date_filter=date_filter, outside_web_app=True, full_load=False)
+    
