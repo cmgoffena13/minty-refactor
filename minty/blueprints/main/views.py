@@ -35,15 +35,8 @@ def before_request():
 
 @main_bp.after_app_request
 def after_request(response):
-    for query in get_recorded_queries():
-        if current_app.debug or current_app.testing:
-            current_app.logger.info(
-                f"Query: {query.statement} \
-                                    \nParameters:{query.parameters} \
-                                    \nDuration:{query.duration} \
-                                    \nContext:{query.context}"
-            )
-        if not current_app.debug and not current_app.testing:
+    if not current_app.debug and not current_app.testing:
+        for query in get_recorded_queries():
             if query.duration >= current_app.config["FLASKY_SLOW_DB_QUERY_TIME"]:
                 current_app.logger.warning(
                     f"Query: {query.statement} \
