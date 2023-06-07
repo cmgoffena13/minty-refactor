@@ -13,10 +13,11 @@ def get_transactions(page, account_id=None, search_data=None):
             Transaction.transaction_amount,
             Transaction.is_debit,
             Account.account_name,
+            CustomCategory.custom_category_id,
             CustomCategory.custom_category_name,
         )
         .join(Account)
-        .outerjoin(CustomCategory)
+        .join(CustomCategory)
     )
 
     if search_data:
@@ -52,19 +53,23 @@ def get_accounts():
 
 def _get_custom_category_names():
     categories = CustomCategory.query.all()
-    category_names = [category.custom_category_name for category in categories]
-    return category_names
+    category_choices = [
+        (category.custom_category_id, category.custom_category_name)
+        for category in categories
+    ]
+    return category_choices
 
 
 def create_custom_category_forms(transactions):
     forms = list()
-    category_names = _get_custom_category_names()
+    category_choices = _get_custom_category_names()
     for transaction in transactions:
         form = AssignCustomCategory(
             prefix=f"{transaction.transaction_id}",
-            category=transaction.custom_category_name,
+            category=transaction.custom_category_id,
         )
-        form.category.choices = category_names
+        form.category.choices = category_choices
+        form.category
         forms.append(form)
     return forms
 
@@ -75,11 +80,11 @@ def record_custom_category(forms, db):
             transaction = Transaction.query.filter(
                 Transaction.transaction_id == form.transaction_id.data
             ).first()
-            transaction.set_custom_category(custom_category_name=form.category.data)
+            transaction.set_custom_category(
+                custom_category_name_id=int(form.category.data)
+            )
             current_app.logger.info(
-                f"transaction_id: {transaction.transaction_id} - updating custom_category: {form.category.data}"
+                f"transaction_id: {transaction.transaction_id} - updating custom_category_id: {form.category.data}"
             )
             db.session.commit()
-            flash(
-                f"TransactionID: {form.transaction_id.data} >>> Category changed to '{form.category.data}'"
-            )
+            flash(f"Changes saved for TransactionID: {form.transaction_id.data}")

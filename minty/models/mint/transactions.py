@@ -38,9 +38,9 @@ class Transaction(db.Model):
 
     __table_args__ = (ix_transaction_description_gin,)
 
-    def set_custom_category(self, custom_category_name):
-        custom_category = CustomCategory.query.filter_by(
-            custom_category_name=custom_category_name
-        ).first()
-        self.custom_category_id = custom_category.custom_category_id
+    def set_custom_category(self, custom_category_name_id):
+        # custom_category = CustomCategory.query.filter_by(
+        #    custom_category_name=custom_category_name
+        # ).first()
+        self.custom_category_id = custom_category_name_id
         db.session.commit()

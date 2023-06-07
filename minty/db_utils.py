@@ -40,6 +40,7 @@ def get_latest_pay_period():
     rows = resultset.fetchall()
     return rows
 
+
 def get_latest_category_spending():
     stmt = text(
         """

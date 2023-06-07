@@ -22,7 +22,7 @@ def create_app(config_class=FlaskConfig):
     extensions(app=app)
 
     if app.debug:
-        app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+        app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 
     if app.config["LOG_TO_STDOUT"]:
         stream_handler = logging.StreamHandler()
