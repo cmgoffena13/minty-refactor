@@ -2,7 +2,6 @@
     1. This will require Redis and rq workers. 
     2. Tasks table and understanding interaction.
     3. Docker-Compose file needed.
-4. As a user, I want page links at the bottom of the transaction page. Ex. Page 1 | Page 2 | Page 3 etc.
 5. As a programmer, I need to explore more Javascript.
     1. How do I create interactive graphs? Chart.js, maybe Plotly?
     2. Investigate use-cases for Javascript.
