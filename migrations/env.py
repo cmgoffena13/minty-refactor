@@ -2,7 +2,7 @@ import logging
 from logging.config import fileConfig
 
 from alembic import context
-from config import FlaskConfig
+from minty.config.settings import FlaskConfig
 from flask import current_app
 
 # this is the Alembic Config object, which provides

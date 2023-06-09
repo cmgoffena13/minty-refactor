@@ -4,6 +4,8 @@ from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
 from flask_sqlalchemy.record_queries import get_recorded_queries
+from sqlalchemy import text
+from flask_migrate import upgrade
 
 from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
@@ -57,17 +59,20 @@ def create_app(config_class=FlaskConfig):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
 
-    if not app.testing:
-        app.logger.info("Applying postgres setup scripts:")
-        postgres_files_short_path = "setup/postgres"
-        minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        postgres_files_full_path = os.path.join(
-            minty_directory, postgres_files_short_path
-        )
+    app.logger.info("Applying postgres setup scripts:")
+    postgres_files_short_path = "setup/postgres"
+    minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    postgres_files_full_path = os.path.join(
+        minty_directory, postgres_files_short_path
+    )
 
-        for file in os.listdir(postgres_files_full_path):
-            file_path = os.path.join(postgres_files_full_path, file)
-            app.logger.info(f"    {file_path}")
+    for file in os.listdir(postgres_files_full_path):
+        file_path = os.path.join(postgres_files_full_path, file)
+        app.logger.info(f"    {file_path}")
+        query = text(open(file_path).read())
+        with app.app_context():
+            db.session.execute(query)
+            db.session.commit()
 
     with app.app_context():
         from minty.db_utils import (

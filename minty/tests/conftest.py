@@ -3,7 +3,7 @@ import pytest
 from minty.app import create_app
 from minty.config.settings import TestConfig
 from minty.extensions import db
-
+from minty.tests.test_utils import truncate_tables
 
 @pytest.fixture(scope="session")
 def test_app():
@@ -11,14 +11,13 @@ def test_app():
     _app = create_app(config_class=TestConfig)
     _app_context = _app.app_context()
     _app_context.push()
-    db.create_all()
-    yield
+    yield _app
     print("Tearing down test db")
     db.session.remove()
-    db.drop_all()
+    truncate_tables()
     _app_context.pop()
 
 
 @pytest.fixture(scope="function")
 def client(test_app):
-    yield test_app.test_clint()
+    yield test_app.test_client()
