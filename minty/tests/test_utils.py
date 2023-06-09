@@ -1,6 +1,7 @@
 from minty.extensions import db
 from sqlalchemy import text
 
+
 def truncate_tables():
     stmt = text(
     """
