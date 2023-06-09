@@ -41,6 +41,8 @@ BEGIN
 	SUM(t.transaction_amount) AS transaction_amounts,
 	LEAD(t.transaction_date) OVER (ORDER BY t.transaction_date) AS next_day_transaction_date
 	FROM public.transactions AS t
+	INNER JOIN temp_income_time_frame_dates AS i
+		ON i.date_actual = t.transaction_date
 	INNER JOIN public.accounts AS a
 		ON a.account_id = t.account_id
 	WHERE a.is_operation_account = true
@@ -51,12 +53,11 @@ BEGIN
 	SELECT
 	d.date_actual,
 	CAST(d.pay_period_id AS INT) AS pay_period_id,
-	SUM(t.transaction_amounts) OVER (PARTITION BY d.pay_period_id ORDER BY d.date_actual) AS rolling_transactions_amounts_p1,
+	SUM(COALESCE(t.transaction_amounts,0)) OVER (ORDER BY d.date_actual) AS rolling_transactions_amounts_p1,
 	ROW_NUMBER() OVER (PARTITION BY d.pay_period_id ORDER BY d.date_actual) AS day_num
 	FROM temp_income_time_frame_dates AS d
-	INNER JOIN temp_transactions_by_day AS t
-		ON d.date_actual BETWEEN t.transaction_date 
-		AND COALESCE((CAST(next_day_transaction_date - INTERVAL '1 day' AS DATE)), t.transaction_date) /* fills in missing days */
+	LEFT JOIN temp_transactions_by_day AS t
+		ON t.transaction_date = d.date_actual
 	WHERE d.local_pay_period = 1
 	ORDER BY d.date_actual DESC;
 	
@@ -65,12 +66,11 @@ BEGIN
 	SELECT
 	d.date_actual,
 	d.pay_period_id,
-	SUM(t.transaction_amounts) OVER (PARTITION BY d.pay_period_id ORDER BY d.date_actual) AS rolling_transactions_amounts_p2,
+	SUM(COALESCE(t.transaction_amounts,0)) OVER (ORDER BY d.date_actual) AS rolling_transactions_amounts_p2,
 	ROW_NUMBER() OVER (PARTITION BY d.pay_period_id ORDER BY d.date_actual) AS day_num
 	FROM temp_income_time_frame_dates AS d
-	INNER JOIN temp_transactions_by_day AS t
-		ON d.date_actual BETWEEN t.transaction_date 
-		AND COALESCE((CAST(next_day_transaction_date - INTERVAL '1 day' AS DATE)), t.transaction_date) /* fills in missing days */
+	LEFT JOIN temp_transactions_by_day AS t
+		ON t.transaction_date = d.date_actual
 	WHERE d.local_pay_period = 2
 	ORDER BY d.date_actual DESC;
 
