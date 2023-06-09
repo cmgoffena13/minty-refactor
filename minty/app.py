@@ -3,9 +3,9 @@ import os
 from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
+from flask_migrate import upgrade
 from flask_sqlalchemy.record_queries import get_recorded_queries
 from sqlalchemy import text
-from flask_migrate import upgrade
 
 from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
@@ -62,9 +62,7 @@ def create_app(config_class=FlaskConfig):
     app.logger.info("Applying postgres setup scripts:")
     postgres_files_short_path = "setup/postgres"
     minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    postgres_files_full_path = os.path.join(
-        minty_directory, postgres_files_short_path
-    )
+    postgres_files_full_path = os.path.join(minty_directory, postgres_files_short_path)
 
     for file in os.listdir(postgres_files_full_path):
         file_path = os.path.join(postgres_files_full_path, file)

@@ -35,9 +35,9 @@ class TestConfig(FlaskConfig):
     LOG_TO_FILE = 0
     LOG_TO_STDOUT = 0
     SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL")
-    SERVER_NAME = 'localhost'
-    APPLICATION_ROOT = '/'
-    PREFERRED_URL_SCHEME = 'http'
+    SERVER_NAME = "localhost"
+    APPLICATION_ROOT = "/"
+    PREFERRED_URL_SCHEME = "http"
 
 
 class CustomCategoryEnum(Enum):
