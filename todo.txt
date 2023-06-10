@@ -5,8 +5,6 @@
 5. As a programmer, I need to explore more Javascript.
     1. How do I create interactive graphs? Chart.js, maybe Plotly?
     2. Investigate use-cases for Javascript.
-8. As a programmer, I need to write tests BAD. get on it. ChatGPT that to get a start.
-    1. Have a good idea of it. Need to follow up on the issues with Postgres.
 9. As a programmer, I need to setup github hooks for black and isort for CI. Higher priority, but debugging is gonna be tough.
 10. As a programmer, I need to investigate searching for transactions by date as well. 
     Question: Can I include in search bar or need a date picker?
