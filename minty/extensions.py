@@ -3,7 +3,10 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from flask_wtf.csrf import CSRFProtect
 
+
+csrf = CSRFProtect()
 debug_toolbar = DebugToolbarExtension()
 migrate = Migrate()
 bootstrap = Bootstrap()

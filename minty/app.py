@@ -10,7 +10,7 @@ from sqlalchemy import text
 from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
 from minty.config.settings import FlaskConfig
-from minty.extensions import bootstrap, db, debug_toolbar, migrate
+from minty.extensions import bootstrap, db, debug_toolbar, migrate, csrf
 from minty.templates.filters import format_currency, limit_characters
 
 
@@ -90,6 +90,7 @@ def extensions(app):
     db.init_app(app=app)
     migrate.init_app(app=app, db=db)
     bootstrap.init_app(app=app)
+    csrf.init_app(app=app)
     return None
 
 
