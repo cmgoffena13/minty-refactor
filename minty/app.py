@@ -1,7 +1,6 @@
 import logging
 import os
 from logging.handlers import TimedRotatingFileHandler
-
 from flask import Flask
 from flask_migrate import upgrade
 from flask_sqlalchemy.record_queries import get_recorded_queries
