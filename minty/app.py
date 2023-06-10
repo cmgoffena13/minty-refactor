@@ -66,7 +66,7 @@ def create_app(config_class=FlaskConfig):
 
     for file in os.listdir(postgres_files_full_path):
         file_path = os.path.join(postgres_files_full_path, file)
-        app.logger.info(f"    {file_path}")
+        app.logger.info(f"    Executing: {file}")
         query = text(open(file_path).read())
         with app.app_context():
             db.session.execute(query)
