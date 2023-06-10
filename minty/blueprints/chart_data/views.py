@@ -30,6 +30,7 @@ def net_worth():
 @chart_data_bp.route("/chart-data/pay_period")
 def pay_period():
     pay_period_data = get_latest_pay_period()
+    print(pay_period_data)
     pay_period_data = [
         {
             "date_actual": pay_period.date_actual.strftime("%Y-%m-%d"),

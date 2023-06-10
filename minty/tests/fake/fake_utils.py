@@ -36,7 +36,7 @@ def create_fake_accounts():
 
 def create_fake_transactions(months, transactions_per_month):
     fake_accounts = create_fake_accounts()
-    for month_index, month in enumerate(range(0, months)):
+    for month in range(0, months):
         month += 1
         for tran_index, _ in enumerate(range(transactions_per_month)):
             transaction = FakeTransaction()
@@ -45,7 +45,7 @@ def create_fake_transactions(months, transactions_per_month):
                 date_end=datetime(datetime.today().year, month, 28),
             )
 
-            if month_index == 0 and tran_index == 0:
+            if tran_index == 0:
                 transaction.custom_category_id = 1  # paycheck per month
 
             if transaction.custom_category_id == 1:

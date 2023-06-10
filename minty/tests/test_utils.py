@@ -1,6 +1,7 @@
 from sqlalchemy import text
 
 from minty.extensions import db
+from minty.models import Transaction
 
 
 def truncate_tables():
@@ -12,3 +13,8 @@ def truncate_tables():
     )
     db.session.execute(stmt)
     db.session.commit()
+
+
+def test_transactions_available(test_app):
+    tran_count = len(Transaction.query.all())
+    assert tran_count > 0

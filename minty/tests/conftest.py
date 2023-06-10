@@ -13,11 +13,11 @@ def test_app():
     _app = create_app(config_class=TestConfig)
     _app_context = _app.app_context()
     _app_context.push()
+    truncate_tables()
     seed_test_db()
     yield _app
     print("Tearing down test db")
     db.session.remove()
-    truncate_tables()
     _app_context.pop()
 
 
