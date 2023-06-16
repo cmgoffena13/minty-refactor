@@ -69,7 +69,6 @@ def create_custom_category_forms(transactions):
             category=transaction.custom_category_id,
         )
         form.category.choices = category_choices
-        form.category
         forms.append(form)
     return forms
 

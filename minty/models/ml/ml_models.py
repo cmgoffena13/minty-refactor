@@ -23,6 +23,7 @@ class Classifier(db.Model):
     date_filter = db.Column(DATE)
     is_trained = db.Column(BOOLEAN)
     accuracy = db.Column(NUMERIC(20, 4))
+    is_active = db.Column(BOOLEAN, nullable=False, default=False)
 
     def __init__(self, classifier_name, date_filter):
         self.vectorizer = CountVectorizer()
@@ -52,15 +53,19 @@ class Classifier(db.Model):
         encoder = OneHotEncoder(sparse_output=False)
 
         transactions = (
-            Transaction.query.with_entities(
-                Transaction.transaction_id,
-                Transaction.transaction_date,
-                Transaction.transaction_description,
-                Transaction.transaction_amount,
-                Transaction.custom_category_id,
-                Transaction.account_id,
+            (
+                Transaction.query.with_entities(
+                    Transaction.transaction_id,
+                    Transaction.transaction_date,
+                    Transaction.transaction_description,
+                    Transaction.transaction_amount,
+                    Transaction.custom_category_id,
+                    Transaction.account_id,
+                )
             )
-        ).filter(Transaction.transaction_date >= date_filter)
+            .filter(Transaction.transaction_date >= date_filter)
+            .filter(Transaction.custom_category_id != -1)
+        )
 
         for transaction in transactions:
             transaction_descriptions.append(transaction.transaction_description)

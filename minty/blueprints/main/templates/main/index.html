@@ -2,9 +2,7 @@
 
 {% block app_content %}
     <div>
-        <h1>Monthly Statements</h1>
-        <canvas id="net_worth_line_graph" width="400" height="100"></canvas>
-        <hr>
+        <h1>Accounts</h1>
     </div>
 
     <table class="table">
@@ -20,6 +18,18 @@
     {% endfor %}
     </table>
     <hr>
+
+    <div>
+        <h1>Monthly Statements</h1>
+        <canvas id="net_worth_line_graph" width="400" height="100"></canvas>
+        <hr>
+    </div>
+
+    <div>
+        <h1>Monthly Expenses</h1>
+        <canvas id="monthly_expense_graph" width="400" height="100"></canvas>
+        <hr>
+    </div>
 {% endblock %}
 
 {% block app_scripts %}

@@ -14,8 +14,9 @@
             <th scope="col">Classifier</th>
             <th scope="col">Accuracy</th>
             <th scope="col">Delete</th>
+            <th scope="col">Active</th>
         </thead>
-    {% for model, delete_form in models_data %}
+    {% for model, delete_form, active_form in models_data %}
         {% include 'ml/_model.html' %}
     {% endfor %}
     </table>

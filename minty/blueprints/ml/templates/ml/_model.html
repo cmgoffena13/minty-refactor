@@ -4,13 +4,25 @@
     <td>{{ model.classifier }}</td>
     <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
     <td>
-        <form class="form-inline" method="POST">
+        <form class="form-inline" method="POST" action="{{ url_for('ml.delete_model') }}">
             <div class="form-group">
                 {{ delete_form.submit(class="btn btn-danger", prefix=model.classifier_name) }}
             </div>
             {{ delete_form.classifier_name(value=model.classifier_name, type='hidden') }}
 
             {{ delete_form.hidden_tag() }}
+        </form>
+    </td>
+    <td>
+        <form class="form-inline" method="POST" action="{{ url_for('ml.update_model') }}">
+            <div class="form-group">
+                {{ active_form.active(class="form-control", prefix=model.classifier_name) }}
+            </div>
+            <div class="form-group">
+                {{ active_form.submit(class="btn btn-primary") }}
+            </div>
+            {{ active_form.classifier_name(value=model.classifier_name, type='hidden') }}
+            {{ active_form.hidden_tag() }}
         </form>
     </td>
 </tr>
