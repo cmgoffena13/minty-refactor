@@ -3,6 +3,7 @@
     <td>{{ model.vectorizer }}</td>
     <td>{{ model.classifier }}</td>
     <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
+    <td>{{ model.importance_threshold }}</td>
     <td>
         <form class="form-inline" method="POST" action="{{ url_for('ml.delete_model') }}">
             <div class="form-group">

@@ -25,15 +25,16 @@ class Classifier(db.Model):
     accuracy = db.Column(NUMERIC(20, 4))
     is_active = db.Column(BOOLEAN, nullable=False, default=False)
 
-    def __init__(self, classifier_name, date_filter):
+    def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
         self.classifier = DecisionTreeClassifier()
         self.is_trained = False
         self.accuracy = None
         self.classifier_name = classifier_name
-        self.date_filter = date_filter
+        self.date_filter = None
         self.test_size = 0.20
         self.random_state = 42
+        self.importance_thresold = None
 
     def _test_accuracy(self, all_features, all_answers, test_size, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
@@ -96,15 +97,23 @@ class Classifier(db.Model):
 
         return all_features, all_answers
 
-    def train(self, date_filter):
+    def train(self, date_filter, importance_threshold):
+        self.date_filter = date_filter,
+        self.importance_threshold = importance_threshold
         features, answers = self._get_ml_data(date_filter=date_filter)
+        self.classifier.fit(features, answers)
+
+        # Trim features
+        importance = self.classifier.feature_importances_
+        features_remove = np.where(importance <= importance_threshold)[0]
+        trimmed_features = np.delete(features, features_remove, axis=1)
         self.accuracy = self._test_accuracy(
-            all_features=features,
+            all_features=trimmed_features,
             all_answers=answers,
             test_size=self.test_size,
             random_state=self.random_state,
         )
-        self.classifier.fit(features, answers)
+        self.classifier.fit(trimmed_features, answers)
         self.is_trained = True
 
     def classify(self, transaction_features):
@@ -126,6 +135,5 @@ class Classifier(db.Model):
 
     @classmethod
     def load_model(cls, classifier_name):
-        current_app.logger.info(f"Loading Classifier: {classifier_name}")
         classifier = cls.get_by_classifier_name(classifier_name=classifier_name)
         return pickle.loads(classifier.classifier_model)

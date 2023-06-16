@@ -1,5 +1,4 @@
 from flask import Blueprint, flash, redirect, render_template, url_for
-
 from minty.blueprints.ml.forms import CreateNewModel
 from minty.blueprints.ml.view_utils import (
     create_active_forms,
@@ -21,6 +20,13 @@ def models():
     for model in models:
         extracted_models.append(model.load_model(model.classifier_name))
 
+    for model in extracted_models:
+        importance = model.classifier.feature_importances_
+        for index, value in enumerate(importance):
+            pass
+            #print(f"Feature: {index}, Score: {value}")
+
+
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
     models_data = zip(extracted_models, delete_forms, active_forms)
@@ -30,14 +36,13 @@ def models():
             classifier_name=str(form.classifier_name.data)
             + "_"
             + str(form.date_filter.data),
-            date_filter=form.date_filter.data,
         )
-        new_model.train(date_filter=form.date_filter.data)
+        new_model.train(date_filter=form.date_filter.data, importance_threshold=form.importance_threshold.data)
         new_model.save_model()
         db.session.add(new_model)
         db.session.commit()
         flash(
-            f"Created new model: {new_model.classifier_name} - Accuracy: {new_model.accuracy}"
+            f'Created new model: "{new_model.classifier_name}" - Accuracy: {new_model.accuracy}'
         )
         return redirect(url_for("ml.models", form=form, models_data=models_data))
 
