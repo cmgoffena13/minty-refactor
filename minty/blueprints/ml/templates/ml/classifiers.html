@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+    {% if form %}
+        {{ wtf.quick_form(form) }}<br>
+    {% endif %}
+
+    <table class="table">
+        <thead class="thead-dark">
+            <th scope="col">Model Name</th>
+            <th scope="col">Vectorizer</th>
+            <th scope="col">Classifier</th>
+            <th scope="col">Accuracy</th>
+            <th scope="col">Delete</th>
+        </thead>
+    {% for model, delete_form in models_data %}
+        {% include 'ml/_model.html' %}
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -48,6 +48,7 @@ def pay_period():
 
 @chart_data_bp.route("/chart-data/category_spending")
 def category_spending():
+    # CATEGORIES_SKIP = set(["APT_RENT", "HOUSE_MORTGAGE"])
     category_spending_data = get_latest_category_spending()
     category_spending_data = [
         {
@@ -62,5 +63,6 @@ def category_spending():
             ),
         }
         for category_spending in category_spending_data
+        if category_spending.custom_category_name  # not in CATEGORIES_SKIP
     ]
     return jsonify(category_spending_data)

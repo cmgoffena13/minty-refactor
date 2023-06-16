@@ -1,0 +1,16 @@
+<tr>
+    <td>{{ model.classifier_name }}</td>
+    <td>{{ model.vectorizer }}</td>
+    <td>{{ model.classifier }}</td>
+    <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
+    <td>
+        <form class="form-inline" method="POST">
+            <div class="form-group">
+                {{ delete_form.submit(class="btn btn-danger", prefix=model.classifier_name) }}
+            </div>
+            {{ delete_form.classifier_name(value=model.classifier_name, type='hidden') }}
+
+            {{ delete_form.hidden_tag() }}
+        </form>
+    </td>
+</tr>

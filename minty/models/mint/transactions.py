@@ -3,7 +3,6 @@ from sqlalchemy.dialects.postgresql import *
 from sqlalchemy.sql import func
 
 from minty.extensions import db
-from minty.models import CustomCategory
 
 
 class Transaction(db.Model):

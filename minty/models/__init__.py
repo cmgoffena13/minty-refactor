@@ -7,3 +7,4 @@ from minty.models.mint.merchants import Merchant
 from minty.models.mint.net_worths import NetWorth
 from minty.models.mint.transaction_types import TransactionType
 from minty.models.mint.transactions import Transaction
+from minty.models.ml.ml_models import Classifier

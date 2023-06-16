@@ -21,3 +21,15 @@ def limit_characters(value):
     else:
         _value = value
     return _value
+
+
+def good_accuracy(value):
+    if not isinstance(value, (Number, Decimal)):
+        raise TypeError("Value must be Number.")
+    if value < 0.70:
+        _value = Markup('<span style="color:red;">' + str(value) + "</span>")
+    if value > 0.85:
+        _value = Markup('<span style="color:green;">' + str(value) + "</span>")
+    if value > 0.70 and value < 0.85:
+        _value = Markup('<span style="color:orange;">' + str(value) + "</span>")
+    return _value
