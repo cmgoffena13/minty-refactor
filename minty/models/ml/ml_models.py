@@ -122,11 +122,11 @@ class Classifier(db.Model):
         self.classifier_model = pickle.dumps(self)
 
     @classmethod
-    def load_model(cls, classifier_name):
-        current_app.logger.info(f"Loading Classifier: {classifier_name}")
-        classifier = cls.query.filter_by(classifier_name=classifier_name).first()
-        return pickle.loads(classifier.classifier_model)
-
-    @classmethod
     def get_by_classifier_name(cls, classifier_name):
         return cls.query.filter_by(classifier_name=classifier_name).first()
+
+    @classmethod
+    def load_model(cls, classifier_name):
+        current_app.logger.info(f"Loading Classifier: {classifier_name}")
+        classifier = cls.get_by_classifier_name(classifier_name=classifier_name)
+        return pickle.loads(classifier.classifier_model)
