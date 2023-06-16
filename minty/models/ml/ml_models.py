@@ -125,12 +125,7 @@ class Classifier(db.Model):
     def load_model(cls, classifier_name):
         current_app.logger.info(f"Loading Classifier: {classifier_name}")
         classifier = cls.query.filter_by(classifier_name=classifier_name).first()
-        loaded_model = pickle.loads(classifier.classifier_model)
-        classifier.vectorizer = loaded_model.vectorizer
-        classifier.classifier = loaded_model.classifier
-        classifier.accuracy = loaded_model.accuracy
-        classifier.classifier_name = loaded_model.classifier_name
-        return classifier
+        return pickle.loads(classifier.classifier_model)
 
     @classmethod
     def get_by_classifier_name(cls, classifier_name):
