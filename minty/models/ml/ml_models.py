@@ -32,10 +32,10 @@ class Classifier(db.Model):
         self.accuracy = None
         self.classifier_name = classifier_name
         self.date_filter = date_filter
+        self.test_size = 0.20
+        self.random_state = 42
 
-    def _test_accuracy(
-        self, all_features, all_answers, test_size=0.2, random_state=None
-    ):
+    def _test_accuracy(self, all_features, all_answers, test_size, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
             all_features, all_answers, test_size=test_size, random_state=random_state
         )
@@ -99,7 +99,12 @@ class Classifier(db.Model):
 
     def train(self, date_filter):
         features, answers = self._get_ml_data(date_filter=date_filter)
-        self.accuracy = self._test_accuracy(all_features=features, all_answers=answers)
+        self.accuracy = self._test_accuracy(
+            all_features=features,
+            all_answers=answers,
+            test_size=self.test_size,
+            random_state=self.random_state,
+        )
         self.classifier.fit(features, answers)
         self.is_trained = True
 
