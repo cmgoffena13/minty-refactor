@@ -68,7 +68,7 @@ def delete_model():
             )
             db.session.delete(model)
             db.session.commit()
-            flash(f"Deleted model: {model.classifier_name}")
+            flash(f'Deleted model: "{model.classifier_name}"')
             return redirect(url_for("ml.models", form=form, models_data=models_data))
 
 
@@ -102,5 +102,5 @@ def update_model():
                 ).first()
                 setattr(model, "is_active", b)
                 db.session.commit()
-                flash(f"Updated model {active_form.classifier_name.data} to {t}")
+                flash(f'Updated model "{active_form.classifier_name.data}" to {t}')
             return redirect(url_for("ml.models", form=form, models_data=models_data))
