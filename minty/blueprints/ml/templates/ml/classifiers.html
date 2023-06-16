@@ -4,16 +4,19 @@
 {% block app_content %}
 
     {% if form %}
-        {{ wtf.quick_form(form) }}<br>
+        {{ wtf.quick_form(form, form_type="inline") }}<br>
     {% endif %}
 
     <table class="table">
         <thead class="thead-dark">
             <th scope="col">Model Name</th>
-            <th scope="col">Vectorizer</th>
             <th scope="col">Classifier</th>
+            <td scope="col">Date Filter</td>
+            <th scope="col">#Features</th>
+            <th scope="col">#Rows</th>
+            <th scope="col">t_Split</th>
             <th scope="col">Accuracy</th>
-            <th scope="col">F_Threshold</th>
+            <th scope="col">f_Threshold</th>
             <th scope="col">Delete</th>
             <th scope="col">Active</th>
         </thead>
@@ -21,4 +24,5 @@
         {% include 'ml/_model.html' %}
     {% endfor %}
     </table>
+    <hr>
 {% endblock %}

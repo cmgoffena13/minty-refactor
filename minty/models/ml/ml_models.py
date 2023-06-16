@@ -24,6 +24,10 @@ class Classifier(db.Model):
     is_trained = db.Column(BOOLEAN)
     accuracy = db.Column(NUMERIC(20, 4))
     is_active = db.Column(BOOLEAN, nullable=False, default=False)
+    feature_count = db.Column(INTEGER)
+    feature_rows = db.Column(INTEGER)
+    training_split = db.Column(NUMERIC(20,4))
+    feature_importance_threshold = db.Column(NUMERIC(20,4))
 
     def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
@@ -32,13 +36,15 @@ class Classifier(db.Model):
         self.accuracy = None
         self.classifier_name = classifier_name
         self.date_filter = None
-        self.test_size = 0.20
+        self.training_split = None
         self.random_state = 42
-        self.importance_thresold = None
+        self.feature_importance_threshold = None
+        self.feature_count = None
+        self.feature_rows = None
 
-    def _test_accuracy(self, all_features, all_answers, test_size, random_state):
+    def _test_accuracy(self, all_features, all_answers, training_split, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
-            all_features, all_answers, test_size=test_size, random_state=random_state
+            all_features, all_answers, test_size=training_split, random_state=random_state
         )
         self.classifier.fit(features_train, answers_train)
         category_pred = self.classifier.predict(features_test)
@@ -64,7 +70,7 @@ class Classifier(db.Model):
                 )
             )
             .filter(Transaction.transaction_date >= date_filter)
-            .filter(Transaction.custom_category_id != -1)
+            #.filter(Transaction.custom_category_id != -1)
         )
 
         for transaction in transactions:
@@ -97,20 +103,23 @@ class Classifier(db.Model):
 
         return all_features, all_answers
 
-    def train(self, date_filter, importance_threshold):
-        self.date_filter = date_filter,
-        self.importance_threshold = importance_threshold
+    def train(self, date_filter, feature_importance_threshold, training_split):
+        self.date_filter = date_filter
+        self.feature_importance_threshold = feature_importance_threshold
+        self.training_split = training_split
+        
         features, answers = self._get_ml_data(date_filter=date_filter)
         self.classifier.fit(features, answers)
 
         # Trim features
         importance = self.classifier.feature_importances_
-        features_remove = np.where(importance <= importance_threshold)[0]
+        features_remove = np.where(importance < feature_importance_threshold)[0]
         trimmed_features = np.delete(features, features_remove, axis=1)
+        self.feature_rows, self.feature_count = trimmed_features.shape
         self.accuracy = self._test_accuracy(
             all_features=trimmed_features,
             all_answers=answers,
-            test_size=self.test_size,
+            training_split=self.training_split,
             random_state=self.random_state,
         )
         self.classifier.fit(trimmed_features, answers)

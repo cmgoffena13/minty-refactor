@@ -20,13 +20,6 @@ def models():
     for model in models:
         extracted_models.append(model.load_model(model.classifier_name))
 
-    for model in extracted_models:
-        importance = model.classifier.feature_importances_
-        for index, value in enumerate(importance):
-            pass
-            #print(f"Feature: {index}, Score: {value}")
-
-
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
     models_data = zip(extracted_models, delete_forms, active_forms)
@@ -34,10 +27,12 @@ def models():
     if form.validate_on_submit():
         new_model = Classifier(
             classifier_name=str(form.classifier_name.data)
-            + "_"
-            + str(form.date_filter.data),
         )
-        new_model.train(date_filter=form.date_filter.data, importance_threshold=form.importance_threshold.data)
+        new_model.train(
+            date_filter=form.date_filter.data,
+            feature_importance_threshold=form.feature_importance_threshold.data,
+            training_split=float(form.training_split.data),
+        )
         new_model.save_model()
         db.session.add(new_model)
         db.session.commit()

@@ -1,9 +1,12 @@
 <tr>
     <td>{{ model.classifier_name }}</td>
-    <td>{{ model.vectorizer }}</td>
     <td>{{ model.classifier }}</td>
+    <td>{{ model.date_filter }}</td>
+    <td>{{ model.feature_count }}</td>
+    <td>{{ model.feature_rows }}</td>
+    <td>{{ model.training_split }}</td>
     <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
-    <td>{{ model.importance_threshold }}</td>
+    <td>{{ model.feature_importance_threshold }}</td>
     <td>
         <form class="form-inline" method="POST" action="{{ url_for('ml.delete_model') }}">
             <div class="form-group">

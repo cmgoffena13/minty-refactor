@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired
 
 class CreateNewModel(FlaskForm):
     classifier_name = StringField("Model Name", validators=[DataRequired()])
-    importance_threshold = DecimalField("Importance Threshold", default=0.0)
+    training_split = DecimalField("Test Size Split", default=0.2, validators=[DataRequired()])
+    feature_importance_threshold = DecimalField("Importance Threshold", default=0.0)
     date_filter = DateField("Date Filter", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    submit = SubmitField("Create Model")
