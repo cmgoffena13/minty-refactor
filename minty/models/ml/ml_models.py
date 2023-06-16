@@ -55,7 +55,6 @@ class Classifier(db.Model):
         transactions = (
             (
                 Transaction.query.with_entities(
-                    Transaction.transaction_id,
                     Transaction.transaction_date,
                     Transaction.transaction_description,
                     Transaction.transaction_amount,
