@@ -59,3 +59,5 @@ class CustomCategoryEnum(Enum):
     UNPLANNED = 16
     UNKNOWN = -1  # This is required. Default value for select field.
     EDUCATION = 17
+    TRANSFER = -2 # This is required. Monthly expenses
+    CRETID_CARD_PAYMENT = -3 # This is required. Monthly expenses

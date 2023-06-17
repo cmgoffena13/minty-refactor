@@ -15,7 +15,8 @@ BEGIN
       EXTRACT(YEAR FROM date_actual) AS year_actual,
       TO_CHAR(date_actual, 'YYYYMM') AS month_year,
       CAST(date_actual - INTERVAL '1 year' AS DATE) AS previous_year_date_actual,
-      TO_CHAR(date_actual - INTERVAL '1 year', 'YYYYMM') AS previous_year_month_year
+      TO_CHAR(date_actual - INTERVAL '1 year', 'YYYYMM') AS previous_year_month_year,
+	  (DATE_TRUNC('MONTH', date_actual) + INTERVAL '1 MONTH' - INTERVAL '1 day')::date AS last_date_of_month
     FROM (
       SELECT '2015-06-24'::DATE + SEQUENCE.DAY AS date_actual /* replace 2015-06-24 with your first transaction date */
       FROM GENERATE_SERIES(0, 5304) AS SEQUENCE (DAY)

@@ -35,7 +35,13 @@
 {% block app_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/net_worth_line_graph.js') }}"></script>
 <script type="text/javascript">
-    const url = {{ url_for('chart_data.net_worth' ) | tojson }}
-    createLineGraph(url);
+    const net_worth_url = {{ url_for('chart_data.net_worth' ) | tojson }}
+    createLineGraph(net_worth_url);
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/monthly_expenses_line_graph.js') }}"></script>
+<script type="text/javascript">
+    const monthly_expenses_url = {{ url_for('chart_data.monthly_expenses' ) | tojson }}
+    createMonthlyExpensesLineGraph(monthly_expenses_url);
 </script>
 {% endblock %}

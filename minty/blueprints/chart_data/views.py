@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import Blueprint, jsonify
 
-from minty.db_utils import get_latest_category_spending, get_latest_pay_period
+from minty.db_utils import get_latest_category_spending, get_latest_pay_period, get_monthly_expenses
 from minty.models import NetWorth
 
 chart_data_bp = Blueprint(
@@ -66,3 +66,15 @@ def category_spending():
         if category_spending.custom_category_name  # not in CATEGORIES_SKIP
     ]
     return jsonify(category_spending_data)
+
+@chart_data_bp.route("/chart-data/monthly_expenses")
+def monthly_expenses():
+    monthly_expenses_data = get_monthly_expenses(date_filter=datetime.date((datetime.now() - timedelta(days=395))))
+    monthly_expenses_data = [
+        {
+            "last_date_of_month": monthly_expenses.last_date_of_month.strftime("%Y-%m-%d"),
+            "monthly_expenses": -int(monthly_expenses.monthly_expenses)
+        }
+        for monthly_expenses in monthly_expenses_data
+    ]
+    return jsonify(monthly_expenses_data)

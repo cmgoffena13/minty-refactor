@@ -54,3 +54,16 @@ def get_latest_category_spending():
     resultset = db.session.execute(stmt)
     rows = resultset.fetchall()
     return rows
+
+def get_monthly_expenses(date_filter):
+    stmt = text(
+        f"""
+        SELECT
+        last_date_of_month,
+        monthly_expenses
+        FROM select_monthly_expenses('{date_filter}')
+        """)
+    resultset = db.session.execute(stmt)
+    rows = resultset.fetchall()
+    return rows
+    
