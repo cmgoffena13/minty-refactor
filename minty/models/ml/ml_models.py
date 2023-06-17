@@ -9,7 +9,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sqlalchemy.dialects.postgresql import *
 from sqlalchemy.types import PickleType
-
+from sqlalchemy import func
 from minty.extensions import db
 from minty.models import Transaction
 
@@ -28,6 +28,7 @@ class Classifier(db.Model):
     feature_rows = db.Column(INTEGER)
     training_split = db.Column(NUMERIC(20, 4))
     feature_importance_threshold = db.Column(NUMERIC(20, 4))
+    max_date = db.Column(DATE)
 
     def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
@@ -36,6 +37,7 @@ class Classifier(db.Model):
         self.accuracy = None
         self.classifier_name = classifier_name
         self.date_filter = None
+        self.max_date = None
         self.training_split = None
         self.random_state = 42
         self.feature_importance_threshold = None
@@ -74,6 +76,9 @@ class Classifier(db.Model):
             ).filter(Transaction.transaction_date >= date_filter)
             # .filter(Transaction.custom_category_id != -1)
         )
+
+        max_date = db.session.query(func.max(Transaction.transaction_date)).scalar()
+        self.max_date = max_date
 
         for transaction in transactions:
             transaction_descriptions.append(transaction.transaction_description)
