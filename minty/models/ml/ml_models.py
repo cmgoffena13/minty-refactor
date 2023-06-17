@@ -26,8 +26,8 @@ class Classifier(db.Model):
     is_active = db.Column(BOOLEAN, nullable=False, default=False)
     feature_count = db.Column(INTEGER)
     feature_rows = db.Column(INTEGER)
-    training_split = db.Column(NUMERIC(20,4))
-    feature_importance_threshold = db.Column(NUMERIC(20,4))
+    training_split = db.Column(NUMERIC(20, 4))
+    feature_importance_threshold = db.Column(NUMERIC(20, 4))
 
     def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
@@ -44,7 +44,10 @@ class Classifier(db.Model):
 
     def _test_accuracy(self, all_features, all_answers, training_split, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
-            all_features, all_answers, test_size=training_split, random_state=random_state
+            all_features,
+            all_answers,
+            test_size=training_split,
+            random_state=random_state,
         )
         self.classifier.fit(features_train, answers_train)
         category_pred = self.classifier.predict(features_test)
@@ -68,9 +71,8 @@ class Classifier(db.Model):
                     Transaction.custom_category_id,
                     Transaction.account_id,
                 )
-            )
-            .filter(Transaction.transaction_date >= date_filter)
-            #.filter(Transaction.custom_category_id != -1)
+            ).filter(Transaction.transaction_date >= date_filter)
+            # .filter(Transaction.custom_category_id != -1)
         )
 
         for transaction in transactions:
@@ -107,7 +109,7 @@ class Classifier(db.Model):
         self.date_filter = date_filter
         self.feature_importance_threshold = feature_importance_threshold
         self.training_split = training_split
-        
+
         features, answers = self._get_ml_data(date_filter=date_filter)
         self.classifier.fit(features, answers)
 
@@ -128,10 +130,8 @@ class Classifier(db.Model):
     def classify(self, transaction_features):
         if not self.is_trained:
             raise Exception("Classifier not trained yet.")
-        transaction_features_vectorized = self.vectorizer.transform(
-            transaction_features
-        )
-        predicted_category = self.classifier.predict(transaction_features_vectorized)
+        predicted_category_encoded = self.classifier.predict(transaction_features)
+        predicted_category = np.argmax(predicted_category_encoded)
         return predicted_category
 
     def save_model(self):

@@ -14,6 +14,7 @@
             <td>{{ transaction.transaction_description }}</td>
             {% endif %}
             <td>{{ transaction.transaction_amount | format_currency }}</td>
+            <td>{{ predictions[transaction.transaction_id] }}</td>
             <!--<td>{{ transaction.is_debit }}</td>-->
             <td>
                 <form class="form-inline" method="POST">

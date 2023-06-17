@@ -64,14 +64,14 @@ def create_app(config_class=FlaskConfig):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
 
-    app.logger.info("Applying postgres setup scripts:")
+    # app.logger.info("Applying postgres setup scripts:")
     postgres_files_short_path = "setup/postgres"
     minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     postgres_files_full_path = os.path.join(minty_directory, postgres_files_short_path)
 
     for file in os.listdir(postgres_files_full_path):
         file_path = os.path.join(postgres_files_full_path, file)
-        app.logger.info(f"    Executing: {file}")
+        # app.logger.info(f"    Executing: {file}")
         query = text(open(file_path).read())
         with app.app_context():
             db.session.execute(query)

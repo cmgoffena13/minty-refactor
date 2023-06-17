@@ -1,4 +1,5 @@
-from flask import current_app, flash
+import requests
+from flask import current_app, flash, url_for
 
 from minty.blueprints.main.forms import AssignCustomCategory
 from minty.models import Account, CustomCategory, Transaction
@@ -12,6 +13,7 @@ def get_transactions(page, account_id=None, search_data=None):
             Transaction.transaction_description,
             Transaction.transaction_amount,
             Transaction.is_debit,
+            Transaction.account_id,
             Account.account_name,
             CustomCategory.custom_category_id,
             CustomCategory.custom_category_name,
@@ -87,3 +89,32 @@ def record_custom_category(forms, db):
             )
             db.session.commit()
             flash(f"Changes saved for TransactionID: {form.transaction_id.data}")
+
+
+def convert_records_to_json(records):
+    # json_data = [dict(row._asdict()) for row in records]
+    data_list = list()
+    data = {"transactions": data_list}
+    for record in records:
+        new_record = dict()
+        key = {int(record.transaction_id): new_record}
+        new_record["transaction_description"] = str(record.transaction_description)
+        new_record["transaction_amount"] = float(record.transaction_amount)
+        new_record["account_id"] = int(record.account_id)
+        data_list.append(key)
+    return data
+
+
+def make_batch_prediction(json_data):
+    url = url_for("ml.predict_batch", _external=True)
+    response = requests.post(url, json=json_data)
+    if response.status_code == 200:
+        predictions = response.json()
+        predictions = predictions["predictions"]
+        categories = CustomCategory.query.all()
+        predictions = {
+            int(k): categories[v].custom_category_name for k, v in predictions.items()
+        }
+    else:
+        predictions = None
+    return predictions

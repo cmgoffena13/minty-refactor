@@ -3,9 +3,11 @@ from flask import Blueprint, flash, g, redirect, render_template, request, url_f
 from minty.blueprints.main.forms import RefreshData, SearchForm
 from minty.blueprints.main.tasks import mint_pull
 from minty.blueprints.main.view_utils import (
+    convert_records_to_json,
     create_custom_category_forms,
     get_accounts,
     get_transactions,
+    make_batch_prediction,
     record_custom_category,
 )
 from minty.extensions import db
@@ -69,6 +71,10 @@ def all_transactions():
 
     forms = create_custom_category_forms(transactions=transactions)
 
+    transaction_json = convert_records_to_json(transactions.items)
+    predictions = make_batch_prediction(json_data=transaction_json)
+    print(predictions)
+
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
@@ -82,6 +88,7 @@ def all_transactions():
                 prev_url=prev_url,
                 transaction_data=transaction_data,
                 transactions=transactions,
+                predictions=predictions,
                 route="main.all_transactions",
             )
         )
@@ -93,6 +100,7 @@ def all_transactions():
         prev_url=prev_url,
         transaction_data=transaction_data,
         transactions=transactions,
+        predictions=predictions,
         route="main.all_transactions",
     )
 
@@ -131,6 +139,9 @@ def account_transactions(account_id):
 
     forms = create_custom_category_forms(transactions=transactions)
 
+    transaction_json = convert_records_to_json(transactions.items)
+    predictions = make_batch_prediction(json_data=transaction_json)
+
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
@@ -146,6 +157,7 @@ def account_transactions(account_id):
                 prev_url=prev_url,
                 transaction_data=transaction_data,
                 transactions=transactions,
+                predictions=predictions,
                 route="main.account_transactions",
             )
         )
@@ -159,6 +171,7 @@ def account_transactions(account_id):
         prev_url=prev_url,
         transaction_data=transaction_data,
         transactions=transactions,
+        predictions=predictions,
         route="main.account_transactions",
     )
 
@@ -192,6 +205,9 @@ def all_transactions_search():
 
     forms = create_custom_category_forms(transactions=transactions)
 
+    transaction_json = convert_records_to_json(transactions.items)
+    predictions = make_batch_prediction(json_data=transaction_json)
+
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
@@ -206,6 +222,7 @@ def all_transactions_search():
                 prev_url=prev_url,
                 transaction_data=transaction_data,
                 transactions=transactions,
+                predictions=predictions,
                 route="main.all_transactions_search",
             )
         )
@@ -218,5 +235,6 @@ def all_transactions_search():
         prev_url=prev_url,
         transaction_data=transaction_data,
         transactions=transactions,
+        predictions=predictions,
         route="main.all_transactions_search",
     )

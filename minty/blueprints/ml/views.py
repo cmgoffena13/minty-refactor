@@ -1,4 +1,6 @@
-from flask import Blueprint, flash, redirect, render_template, url_for
+import numpy as np
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+
 from minty.blueprints.ml.forms import CreateNewModel
 from minty.blueprints.ml.view_utils import (
     create_active_forms,
@@ -25,9 +27,7 @@ def models():
     models_data = zip(extracted_models, delete_forms, active_forms)
 
     if form.validate_on_submit():
-        new_model = Classifier(
-            classifier_name=str(form.classifier_name.data)
-        )
+        new_model = Classifier(classifier_name=str(form.classifier_name.data))
         new_model.train(
             date_filter=form.date_filter.data,
             feature_importance_threshold=form.feature_importance_threshold.data,
@@ -104,3 +104,40 @@ def update_model():
                 db.session.commit()
                 flash(f'Updated model "{active_form.classifier_name.data}" to {t}')
             return redirect(url_for("ml.models", form=form, models_data=models_data))
+
+
+@ml_bp.route("/models/batch-predict/", methods=["POST"])
+def predict_batch():
+    transactions = request.json["transactions"]
+
+    current_model_record = Classifier.query.filter_by(is_active=True).first()
+    current_model = current_model_record.load_model(
+        current_model_record.classifier_name
+    )
+
+    response_dict = dict()
+    for transaction in transactions:
+        transaction_id = list(transaction.keys())[0]
+        transaction_data = list(transaction.values())[0]
+        transaction_description_v = current_model.vectorizer.transform(
+            [transaction_data["transaction_description"]]
+        )
+        transaction_amount_a = np.array(transaction_data["transaction_amount"]).reshape(
+            -1, 1
+        )
+        account_id_a = np.array(transaction_data["account_id"]).reshape(-1, 1)
+
+        features = np.concatenate(
+            (
+                transaction_description_v.toarray(),
+                transaction_amount_a,
+                account_id_a,
+            ),
+            axis=1,
+        )
+
+        prediction = current_model.classify(transaction_features=features)
+        response_dict[int(transaction_id)] = int(prediction)
+
+    response_json = {"predictions": response_dict}
+    return jsonify(response_json)
