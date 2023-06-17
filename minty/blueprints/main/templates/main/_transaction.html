@@ -6,13 +6,9 @@
             <!--<td>{{ transaction.transaction_id }}</td>-->
             <td>{{ transaction.transaction_date }}</td>
             {% if not account_name_header %}
-            <td>{{ transaction.account_name | limit_characters }}</td>
+            <td>{{ transaction.account_name | limit_characters(length=15) }}</td>
             {% endif %}
-            {% if not account_name_header %}
-            <td>{{ transaction.transaction_description | limit_characters }}</td>
-            {% else %}
-            <td>{{ transaction.transaction_description }}</td>
-            {% endif %}
+            <td>{{ transaction.transaction_description | limit_characters(length=30) }}</td>
             <td>{{ transaction.transaction_amount | format_currency }}</td>
             <td>{{ predictions[transaction.transaction_id] }}</td>
             <!--<td>{{ transaction.is_debit }}</td>-->

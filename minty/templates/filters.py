@@ -12,12 +12,13 @@ def format_currency(value):
     return "${:,.2f}".format(value)
 
 
-def limit_characters(value):
+def limit_characters(value, length=30):
     _value = None
     if not isinstance(value, str):
         raise TypeError("Value must be a string")
-    if len(value) > 30:
-        _value = value[:29] + "..."
+    if len(value) > length:
+        index_v = length - 1
+        _value = value[:index_v] + "..."
     else:
         _value = value
     return _value
