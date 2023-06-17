@@ -1,4 +1,4 @@
-<tr>
+<tr {% if m.is_active is sameas true %}class="success"{% endif %}>
     <td>{{ model.classifier_name }}</td>
     <td>{{ model.classifier }}</td>
     <td>{{ model.date_filter }}</td>

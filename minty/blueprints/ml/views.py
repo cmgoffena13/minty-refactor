@@ -24,7 +24,7 @@ def models():
 
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
-    models_data = zip(extracted_models, delete_forms, active_forms)
+    models_data = zip(extracted_models, delete_forms, active_forms, models)
 
     if form.validate_on_submit():
         new_model = Classifier(classifier_name=str(form.classifier_name.data))
@@ -59,7 +59,7 @@ def delete_model():
 
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
-    models_data = zip(extracted_models, delete_forms, active_forms)
+    models_data = zip(extracted_models, delete_forms, active_forms, models)
 
     for delete_form in delete_forms:
         if delete_form.validate_on_submit():
@@ -82,7 +82,7 @@ def update_model():
 
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
-    models_data = zip(extracted_models, delete_forms, active_forms)
+    models_data = zip(extracted_models, delete_forms, active_forms, models)
 
     for active_form in active_forms:
         if active_form.validate_on_submit():

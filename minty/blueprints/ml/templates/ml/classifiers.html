@@ -7,7 +7,7 @@
         {{ wtf.quick_form(form, form_type="inline") }}<br>
     {% endif %}
 
-    <table class="table">
+    <table class="table table-condensed">
         <thead class="thead-dark">
             <th scope="col">Model Name</th>
             <th scope="col">Classifier</th>
@@ -21,7 +21,7 @@
             <th scope="col">Delete</th>
             <th scope="col">Active</th>
         </thead>
-    {% for model, delete_form, active_form in models_data %}
+    {% for model, delete_form, active_form, m in models_data %}
         {% include 'ml/_model.html' %}
     {% endfor %}
     </table>

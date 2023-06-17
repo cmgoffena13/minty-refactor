@@ -73,7 +73,6 @@ def all_transactions():
 
     transaction_json = convert_records_to_json(transactions.items)
     predictions = make_batch_prediction(json_data=transaction_json)
-    print(predictions)
 
     transaction_data = zip(transactions, forms)
 
