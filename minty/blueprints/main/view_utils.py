@@ -1,5 +1,6 @@
 import requests
 from flask import current_app, flash, url_for
+import time
 
 from minty.blueprints.main.forms import AssignCustomCategory
 from minty.models import Account, CustomCategory, Transaction
@@ -76,6 +77,7 @@ def create_custom_category_forms(transactions):
 
 
 def record_custom_category(forms, db):
+    start_time = time.time()
     for form in forms:  # Only one form can be submited at a time though from the page.
         if form.validate_on_submit():
             transaction = Transaction.query.filter(
@@ -88,6 +90,8 @@ def record_custom_category(forms, db):
                 f"transaction_id: {transaction.transaction_id} - updating custom_category_id: {form.category.data}"
             )
             db.session.commit()
+            end_time = time.time()
+            current_app.logger.info(f"Saving took {end_time - start_time:.2f} seconds")
             flash(f"Changes saved for TransactionID: {form.transaction_id.data}")
 
 

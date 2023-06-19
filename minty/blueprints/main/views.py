@@ -12,6 +12,7 @@ from minty.blueprints.main.view_utils import (
 )
 from minty.extensions import db
 from minty.models import Account
+from minty.blueprints.view_utils import profile_view
 
 main_bp = Blueprint(name="main", import_name=__name__, template_folder="templates")
 
@@ -54,6 +55,7 @@ def analyze_data():
 
 
 @main_bp.route("/transactions", methods=["GET", "POST"])
+@profile_view
 def all_transactions():
     page = request.args.get("page", 1, type=int)
     transactions = get_transactions(page=page)

@@ -44,7 +44,7 @@ BEGIN
 		ON ti.date_actual = t.transaction_date
 	INNER JOIN public.custom_categories AS cc
 		ON cc.custom_category_id = t.custom_category_id
-	WHERE cc.custom_category_id != -1
+	WHERE cc.custom_category_id NOT IN (-1, -2, -3, 3, 4, 8)
 		AND t.transaction_amount < 0
 		AND ti.local_pay_period = 1
 	GROUP BY cc.custom_category_name
@@ -60,7 +60,7 @@ BEGIN
 		ON ti.date_actual = t.transaction_date
 	INNER JOIN public.custom_categories AS cc
 		ON cc.custom_category_id = t.custom_category_id
-	WHERE cc.custom_category_id != -1
+	WHERE cc.custom_category_id NOT IN (-1, -2, -3, 3, 4, 8)
 		AND t.transaction_amount < 0
 		AND ti.local_pay_period = 2
 	GROUP BY cc.custom_category_name
