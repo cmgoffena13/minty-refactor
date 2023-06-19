@@ -20,6 +20,7 @@ class FlaskConfig(object):
     FLASK_ENVIRONMENT = os.environ.get("FLASK_ENVIRONMENT")
     FLASK_APP = os.environ.get("FLASK_APP")
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_PROFILER_DATABASE_URI = os.environ.get("PROFILER_DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
     FLASKY_SLOW_DB_QUERY_TIME = 0.5
@@ -27,6 +28,18 @@ class FlaskConfig(object):
     LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")
     LOG_TO_FILE = os.environ.get("LOG_TO_FILE")
     MIGRATE_IGNORE_TABLES = ["calendar"]
+    FLASK_PROFILER = {
+        "enabled": FLASK_DEBUG,
+        "storage": {
+            "engine": "sqlalchemy",
+            "db_url": SQLALCHEMY_PROFILER_DATABASE_URI
+        },
+        "endpointRoot": "flask-profiler",
+        "ignore": [
+            "^/static/.*",
+            "/_debug_toolbar/[^/]+."
+        ]
+    }
 
 
 class TestConfig(FlaskConfig):

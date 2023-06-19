@@ -1,3 +1,4 @@
+from flask_profiler import Profiler
 from flask_bootstrap import Bootstrap
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
@@ -18,3 +19,4 @@ db = SQLAlchemy(
         }
     )
 )
+profiler = Profiler()
