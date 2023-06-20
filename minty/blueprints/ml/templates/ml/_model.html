@@ -1,6 +1,5 @@
 <tr {% if m.is_active is sameas true %}class="success"{% endif %}>
     <td>{{ model.classifier_name }}</td>
-    <td>{{ model.classifier }}</td>
     <td>{{ model.date_filter }}</td>
     <td>{{ model.max_date }}</td>
     <td>{{ model.feature_count }}</td>
@@ -8,6 +7,7 @@
     <td>{{ model.training_split }}</td>
     <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
     <td>{{ model.feature_importance_threshold }}</td>
+    <td>{{ model.ongoing_accuracy | good_accuracy }}</td>
     <td>
         <form class="form-inline" method="POST" action="{{ url_for('ml.delete_model') }}">
             <div class="form-group">

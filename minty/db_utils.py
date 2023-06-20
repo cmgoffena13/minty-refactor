@@ -5,6 +5,38 @@ from minty.extensions import db
 from minty.models import CustomCategory
 
 
+def seed_db():
+    custom_category_1 = CustomCategory(
+        custom_category_id=-1, custom_category_name="Unknown", locked=True
+    )
+    if not CustomCategory.query.filter_by(
+        custom_category_name=custom_category_1.custom_category_name
+    ).first():
+        db.session.add(custom_category_1)
+    custom_category_2 = CustomCategory(
+        custom_category_id=1, custom_category_name="Paycheck", locked=True
+    )
+    if not CustomCategory.query.filter_by(
+        custom_category_name=custom_category_2.custom_category_name
+    ).first():
+        db.session.add(custom_category_2)
+    custom_category_3 = CustomCategory(
+        custom_category_id=2, custom_category_name="Transfer", locked=True
+    )
+    if not CustomCategory.query.filter_by(
+        custom_category_name=custom_category_3.custom_category_name
+    ).first():
+        db.session.add(custom_category_3)
+    custom_category_4 = CustomCategory(
+        custom_category_id=3, custom_category_name="Credit Card Payment", locked=True
+    )
+    if not CustomCategory.query.filter_by(
+        custom_category_name=custom_category_4.custom_category_name
+    ).first():
+        db.session.add(custom_category_4)
+    db.session.commit()
+
+
 def populate_custom_category_table():
     enum_tuples = [(member.value, member.name) for member in CustomCategoryEnum]
     for value, name in enum_tuples:

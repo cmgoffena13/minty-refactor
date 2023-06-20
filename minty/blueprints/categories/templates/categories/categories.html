@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+
+{% block app_content %}
+    <h1>Categories</h1>
+    <br>
+
+    <table class="table table-condensed">
+        <thead class="thead-dark">
+            <th scope="col">Category Name</th>
+            <th scope="col">Category Locked</th>
+            <th scope="col">Delete</th>
+        </thead>
+    {% for category in category_data %}
+        {% include 'categories/_category.html' %}
+    {% endfor %}
+    </table>
+
+{% endblock %}

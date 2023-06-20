@@ -4,7 +4,13 @@ import requests
 from flask import current_app, flash, url_for
 
 from minty.blueprints.main.forms import AssignCustomCategory
-from minty.models import Account, CustomCategory, Transaction
+from minty.models import (
+    Account,
+    AccuracyHistory,
+    Classifier,
+    CustomCategory,
+    Transaction,
+)
 
 
 def get_transactions(page, account_id=None, search_data=None):
@@ -77,7 +83,7 @@ def create_custom_category_forms(transactions):
     return forms
 
 
-def record_custom_category(forms, db):
+def record_custom_category(forms, predictions, db):
     start_time = time.time()
     for form in forms:  # Only one form can be submited at a time though from the page.
         if form.validate_on_submit():
@@ -87,6 +93,31 @@ def record_custom_category(forms, db):
             transaction.set_custom_category(
                 custom_category_name_id=int(form.category.data)
             )
+            prediction_name = predictions[transaction.transaction_id]
+            print(prediction_name)
+            predicted = CustomCategory.query.filter(
+                CustomCategory.custom_category_name == prediction_name
+            ).one()
+            print(predicted.custom_category_name)
+            current_model = Classifier.query.filter_by(is_active=True).first()
+            if (
+                transaction.transaction_date > current_model.max_date
+                and current_model is not None
+            ):
+                if int(form.category.data) == predicted.custom_category_id:
+                    accurate = 1
+                else:
+                    accurate = 0
+
+                new_history = AccuracyHistory(
+                    classifier_id=current_model.classifier_id,
+                    transaction_id=transaction.transaction_id,
+                    category_id=int(form.category.data),
+                    predicted_category_id=predicted.custom_category_id,
+                    accurate=accurate,
+                )
+                db.session.add(new_history)
+
             current_app.logger.info(
                 f"transaction_id: {transaction.transaction_id} - updating custom_category_id: {form.category.data}"
             )

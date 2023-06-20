@@ -25,8 +25,11 @@ def limit_characters(value, length=30):
 
 
 def good_accuracy(value):
-    if not isinstance(value, (Number, Decimal)):
+    if not isinstance(value, (Number, Decimal)) and value is not None:
         raise TypeError("Value must be Number.")
+    if value is None:
+        _value = None
+        return _value
     if value < 0.70:
         _value = Markup('<span style="color:red;">' + str(value) + "</span>")
     if value > 0.85:

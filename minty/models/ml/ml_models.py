@@ -23,19 +23,20 @@ class Classifier(db.Model):
     classifier_model = db.Column(PickleType)
     date_filter = db.Column(DATE)
     is_trained = db.Column(BOOLEAN)
-    accuracy = db.Column(NUMERIC(20, 4))
+    training_accuracy = db.Column(NUMERIC(20, 4))
     is_active = db.Column(BOOLEAN, nullable=False, default=False)
     feature_count = db.Column(INTEGER)
     feature_rows = db.Column(INTEGER)
     training_split = db.Column(NUMERIC(20, 4))
     feature_importance_threshold = db.Column(NUMERIC(20, 4))
     max_date = db.Column(DATE)
+    ongoing_accuracy = db.Column(NUMERIC(20, 4))
 
     def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
         self.classifier = DecisionTreeClassifier()
         self.is_trained = False
-        self.accuracy = None
+        self.training_accuracy = None
         self.classifier_name = classifier_name
         self.date_filter = None
         self.max_date = None
@@ -66,17 +67,14 @@ class Classifier(db.Model):
         encoder = OneHotEncoder(sparse_output=False)
 
         transactions = (
-            (
-                Transaction.query.with_entities(
-                    Transaction.transaction_date,
-                    Transaction.transaction_description,
-                    Transaction.transaction_amount,
-                    Transaction.custom_category_id,
-                    Transaction.account_id,
-                )
-            ).filter(Transaction.transaction_date >= date_filter)
-            # .filter(Transaction.custom_category_id != -1)
-        )
+            Transaction.query.with_entities(
+                Transaction.transaction_date,
+                Transaction.transaction_description,
+                Transaction.transaction_amount,
+                Transaction.custom_category_id,
+                Transaction.account_id,
+            )
+        ).filter(Transaction.transaction_date >= date_filter)
 
         max_date = db.session.query(func.max(Transaction.transaction_date)).scalar()
         self.max_date = max_date
@@ -117,20 +115,28 @@ class Classifier(db.Model):
         self.training_split = training_split
 
         features, answers = self._get_ml_data(date_filter=date_filter)
-        self.classifier.fit(features, answers)
-
-        # Trim features
-        importance = self.classifier.feature_importances_
-        features_remove = np.where(importance < feature_importance_threshold)[0]
-        trimmed_features = np.delete(features, features_remove, axis=1)
-        self.feature_rows, self.feature_count = trimmed_features.shape
-        self.accuracy = self._test_accuracy(
-            all_features=trimmed_features,
+        self.feature_rows, self.feature_count = features.shape
+        self.training_accuracy = self._test_accuracy(
+            all_features=features,
             all_answers=answers,
             training_split=self.training_split,
             random_state=self.random_state,
         )
-        self.classifier.fit(trimmed_features, answers)
+        self.classifier.fit(features, answers)
+
+        # Trim features
+        if feature_importance_threshold > 0:
+            importance = self.classifier.feature_importances_
+            features_remove = np.where(importance < feature_importance_threshold)[0]
+            trimmed_features = np.delete(features, features_remove, axis=1)
+            self.feature_rows, self.feature_count = trimmed_features.shape
+            self.training_accuracy = self._test_accuracy(
+                all_features=trimmed_features,
+                all_answers=answers,
+                training_split=self.training_split,
+                random_state=self.random_state,
+            )
+            self.classifier.fit(trimmed_features, answers)
         self.is_trained = True
 
     def classify(self, transaction_features):

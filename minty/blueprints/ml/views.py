@@ -1,5 +1,6 @@
 import numpy as np
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+from sqlalchemy import delete
 
 from minty.blueprints.ml.forms import CreateNewModel
 from minty.blueprints.ml.view_utils import (
@@ -9,7 +10,7 @@ from minty.blueprints.ml.view_utils import (
     is_active_text,
 )
 from minty.extensions import db
-from minty.models import Classifier
+from minty.models import AccuracyHistory, Classifier
 
 ml_bp = Blueprint(name="ml", import_name=__name__, template_folder="templates")
 
@@ -37,7 +38,7 @@ def models():
         db.session.add(new_model)
         db.session.commit()
         flash(
-            f'Created new model: "{new_model.classifier_name}" - Accuracy: {new_model.accuracy}'
+            f'Created new model: "{new_model.classifier_name}" - Accuracy: {new_model.training_accuracy}'
         )
         return redirect(url_for("ml.models", form=form, models_data=models_data))
 
@@ -66,6 +67,10 @@ def delete_model():
             model = Classifier.get_by_classifier_name(
                 classifier_name=delete_form.classifier_name.data
             )
+            delete_query = delete(AccuracyHistory).where(
+                AccuracyHistory.classifier_id == model.classifier_id
+            )
+            db.session.execute(delete_query)
             db.session.delete(model)
             db.session.commit()
             flash(f'Deleted model: "{model.classifier_name}"')
@@ -111,33 +116,36 @@ def predict_batch():
     transactions = request.json["transactions"]
 
     current_model_record = Classifier.query.filter_by(is_active=True).first()
-    current_model = current_model_record.load_model(
-        current_model_record.classifier_name
-    )
-
-    response_dict = dict()
-    for transaction in transactions:
-        transaction_id = list(transaction.keys())[0]
-        transaction_data = list(transaction.values())[0]
-        transaction_description_v = current_model.vectorizer.transform(
-            [transaction_data["transaction_description"]]
-        )
-        transaction_amount_a = np.array(transaction_data["transaction_amount"]).reshape(
-            -1, 1
-        )
-        account_id_a = np.array(transaction_data["account_id"]).reshape(-1, 1)
-
-        features = np.concatenate(
-            (
-                transaction_description_v.toarray(),
-                transaction_amount_a,
-                account_id_a,
-            ),
-            axis=1,
+    if current_model_record is not None:
+        current_model = current_model_record.load_model(
+            current_model_record.classifier_name
         )
 
-        prediction = current_model.classify(transaction_features=features)
-        response_dict[int(transaction_id)] = int(prediction)
+        response_dict = dict()
+        for transaction in transactions:
+            transaction_id = list(transaction.keys())[0]
+            transaction_data = list(transaction.values())[0]
+            transaction_description_v = current_model.vectorizer.transform(
+                [transaction_data["transaction_description"]]
+            )
+            transaction_amount_a = np.array(
+                transaction_data["transaction_amount"]
+            ).reshape(-1, 1)
+            account_id_a = np.array(transaction_data["account_id"]).reshape(-1, 1)
 
-    response_json = {"predictions": response_dict}
+            features = np.concatenate(
+                (
+                    transaction_description_v.toarray(),
+                    transaction_amount_a,
+                    account_id_a,
+                ),
+                axis=1,
+            )
+
+            prediction = current_model.classify(transaction_features=features)
+            response_dict[int(transaction_id)] = int(prediction)
+
+        response_json = {"predictions": response_dict}
+    else:
+        response_json = {"predictions": None}
     return jsonify(response_json)

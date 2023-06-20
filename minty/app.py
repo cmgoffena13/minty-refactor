@@ -8,6 +8,7 @@ from flask_migrate import upgrade
 from flask_sqlalchemy.record_queries import get_recorded_queries
 from sqlalchemy import text
 
+from minty.blueprints.categories import categories_bp
 from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
 from minty.blueprints.ml import ml_bp
@@ -93,10 +94,12 @@ def create_app(config_class=FlaskConfig):
         from minty.db_utils import (
             populate_calendar_table,
             populate_custom_category_table,
+            seed_db,
         )
 
         app.logger.info("Running postgres startup scripts")
         populate_custom_category_table()
+        # seed_db()
         populate_calendar_table()
     return app
 
@@ -114,4 +117,5 @@ def blueprints(app):
     app.register_blueprint(blueprint=main_bp)
     app.register_blueprint(blueprint=chart_data_bp)
     app.register_blueprint(blueprint=ml_bp)
+    app.register_blueprint(blueprint=categories_bp)
     return None

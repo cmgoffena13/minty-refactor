@@ -78,7 +78,7 @@ def all_transactions():
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
-        record_custom_category(forms=forms, db=db)
+        record_custom_category(forms=forms, db=db, predictions=predictions)
 
         return redirect(
             url_for(
@@ -145,7 +145,7 @@ def account_transactions(account_id):
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
-        record_custom_category(forms=forms, db=db)
+        record_custom_category(forms=forms, db=db, predictions=predictions)
 
         return redirect(
             url_for(
@@ -211,7 +211,7 @@ def all_transactions_search():
     transaction_data = zip(transactions, forms)
 
     if request.method == "POST":
-        record_custom_category(forms=forms, db=db)
+        record_custom_category(forms=forms, db=db, predictions=predictions)
 
         return redirect(
             url_for(
