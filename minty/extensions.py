@@ -1,7 +1,7 @@
-from flask_profiler import Profiler
 from flask_bootstrap import Bootstrap
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
+from flask_profiler import Profiler
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 

@@ -40,7 +40,6 @@ def create_app(config_class=FlaskConfig):
                     )
         return response
 
-
     if app.debug:
         app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 
@@ -52,9 +51,8 @@ def create_app(config_class=FlaskConfig):
         def after_request(response):
             request_name = request.endpoint
             elapsed_time = time.time() - request.start_time
-            app.logger.info(f'Request {request_name} took: {elapsed_time:.2f} seconds')
+            app.logger.info(f"Request {request_name} took: {elapsed_time:.2f} seconds")
             return response
-
 
     if app.testing:
         pass

@@ -30,16 +30,11 @@ class FlaskConfig(object):
     MIGRATE_IGNORE_TABLES = ["calendar"]
     FLASK_PROFILER = {
         "enabled": FLASK_DEBUG,
-        "storage": {
-            "engine": "sqlalchemy",
-            "db_url": SQLALCHEMY_PROFILER_DATABASE_URI
-        },
+        "storage": {"engine": "sqlalchemy", "db_url": SQLALCHEMY_PROFILER_DATABASE_URI},
         "endpointRoot": "flask-profiler",
-        "ignore": [
-            "^/static/.*",
-            "/_debug_toolbar/[^/]+."
-        ]
+        "ignore": ["^/static/.*", "/_debug_toolbar/[^/]+."],
     }
+    THREADING_ENABLED = True
 
 
 class TestConfig(FlaskConfig):
@@ -74,3 +69,4 @@ class CustomCategoryEnum(Enum):
     EDUCATION = 17
     TRANSFER = -2  # This is required. Monthly expenses
     CRETID_CARD_PAYMENT = -3  # This is required. Monthly expenses
+    HOUSE_REPAIR = 18

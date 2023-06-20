@@ -7,9 +7,10 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import *
 from sqlalchemy.types import PickleType
-from sqlalchemy import func
+
 from minty.extensions import db
 from minty.models import Transaction
 

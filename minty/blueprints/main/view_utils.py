@@ -1,6 +1,7 @@
+import time
+
 import requests
 from flask import current_app, flash, url_for
-import time
 
 from minty.blueprints.main.forms import AssignCustomCategory
 from minty.models import Account, CustomCategory, Transaction
