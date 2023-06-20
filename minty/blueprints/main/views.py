@@ -74,6 +74,8 @@ def all_transactions():
 
     transaction_json = convert_records_to_json(transactions.items)
     predictions = make_batch_prediction(json_data=transaction_json)
+    if predictions is None:
+        flash("Received no predictions!")
 
     transaction_data = zip(transactions, forms)
 
@@ -141,6 +143,8 @@ def account_transactions(account_id):
 
     transaction_json = convert_records_to_json(transactions.items)
     predictions = make_batch_prediction(json_data=transaction_json)
+    if predictions is None:
+        flash("Received no predictions!")
 
     transaction_data = zip(transactions, forms)
 
@@ -207,6 +211,8 @@ def all_transactions_search():
 
     transaction_json = convert_records_to_json(transactions.items)
     predictions = make_batch_prediction(json_data=transaction_json)
+    if predictions is None:
+        flash("Received no predictions!")
 
     transaction_data = zip(transactions, forms)
 

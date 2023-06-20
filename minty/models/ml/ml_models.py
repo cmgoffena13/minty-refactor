@@ -45,6 +45,7 @@ class Classifier(db.Model):
         self.feature_importance_threshold = None
         self.feature_count = None
         self.feature_rows = None
+        self.ongoing_accuracy = None
 
     def _test_accuracy(self, all_features, all_answers, training_split, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
@@ -137,6 +138,7 @@ class Classifier(db.Model):
                 random_state=self.random_state,
             )
             self.classifier.fit(trimmed_features, answers)
+
         self.is_trained = True
 
     def classify(self, transaction_features):

@@ -9,6 +9,7 @@ from minty.blueprints.ml.view_utils import (
     is_active_bool,
     is_active_text,
 )
+from minty.db_utils import get_models_ongoing_accuracy
 from minty.extensions import db
 from minty.models import AccuracyHistory, Classifier
 
@@ -18,10 +19,13 @@ ml_bp = Blueprint(name="ml", import_name=__name__, template_folder="templates")
 @ml_bp.route("/models", methods=["GET", "POST"])
 def models():
     form = CreateNewModel()
-    models = Classifier.query.all()
+    models = Classifier.query.order_by(Classifier.classifier_id.asc()).all()
+    accuracy_dict = get_models_ongoing_accuracy()
     extracted_models = []
     for model in models:
-        extracted_models.append(model.load_model(model.classifier_name))
+        model_instance = model.load_model(model.classifier_name)
+        model_instance.ongoing_accuracy = accuracy_dict.get(model.classifier_name)
+        extracted_models.append(model_instance)
 
     delete_forms = create_delete_forms(models=models)
     active_forms = create_active_forms(models=models)
@@ -116,36 +120,35 @@ def predict_batch():
     transactions = request.json["transactions"]
 
     current_model_record = Classifier.query.filter_by(is_active=True).first()
-    if current_model_record is not None:
-        current_model = current_model_record.load_model(
-            current_model_record.classifier_name
+    current_model = current_model_record.load_model(
+        current_model_record.classifier_name
+    )
+
+    response_dict = dict()
+    for transaction in transactions:
+        transaction_id = list(transaction.keys())[0]
+        transaction_data = list(transaction.values())[0]
+        transaction_description_v = current_model.vectorizer.transform(
+            [transaction_data["transaction_description"]]
         )
+        transaction_amount_a = np.array(transaction_data["transaction_amount"]).reshape(
+            -1, 1
+        )
+        account_id_a = np.array(transaction_data["account_id"]).reshape(-1, 1)
 
-        response_dict = dict()
-        for transaction in transactions:
-            transaction_id = list(transaction.keys())[0]
-            transaction_data = list(transaction.values())[0]
-            transaction_description_v = current_model.vectorizer.transform(
-                [transaction_data["transaction_description"]]
-            )
-            transaction_amount_a = np.array(
-                transaction_data["transaction_amount"]
-            ).reshape(-1, 1)
-            account_id_a = np.array(transaction_data["account_id"]).reshape(-1, 1)
+        features = np.concatenate(
+            (
+                transaction_description_v.toarray(),
+                transaction_amount_a,
+                account_id_a,
+            ),
+            axis=1,
+        )
+        # if current_model.features_remove is not None:
+        #    features = np.delete(features, current_model.features_remove, axis=1)
 
-            features = np.concatenate(
-                (
-                    transaction_description_v.toarray(),
-                    transaction_amount_a,
-                    account_id_a,
-                ),
-                axis=1,
-            )
+        prediction = current_model.classify(transaction_features=features)
+        response_dict[int(transaction_id)] = int(prediction)
 
-            prediction = current_model.classify(transaction_features=features)
-            response_dict[int(transaction_id)] = int(prediction)
-
-        response_json = {"predictions": response_dict}
-    else:
-        response_json = {"predictions": None}
+    response_json = {"predictions": response_dict}
     return jsonify(response_json)

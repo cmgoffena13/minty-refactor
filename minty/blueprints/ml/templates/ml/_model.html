@@ -5,7 +5,11 @@
     <td>{{ model.feature_count }}</td>
     <td>{{ model.feature_rows }}</td>
     <td>{{ model.training_split }}</td>
+    {% if model.accuracy %}
     <td>{{ model.accuracy | round(4) | good_accuracy }}</td>
+    {% else %}
+    <td>{{ model.training_accuracy | round(4) | good_accuracy }}</td>
+    {% endif %}
     <td>{{ model.feature_importance_threshold }}</td>
     <td>{{ model.ongoing_accuracy | good_accuracy }}</td>
     <td>

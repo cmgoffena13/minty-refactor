@@ -32,8 +32,8 @@ def good_accuracy(value):
         return _value
     if value < 0.70:
         _value = Markup('<span style="color:red;">' + str(value) + "</span>")
-    if value > 0.85:
+    if value > 0.90:
         _value = Markup('<span style="color:green;">' + str(value) + "</span>")
-    if value > 0.70 and value < 0.85:
+    if value > 0.70 and value < 0.90:
         _value = Markup('<span style="color:orange;">' + str(value) + "</span>")
     return _value

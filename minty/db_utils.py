@@ -100,3 +100,24 @@ def get_monthly_expenses(date_filter):
     resultset = db.session.execute(stmt)
     rows = resultset.fetchall()
     return rows
+
+
+def get_models_ongoing_accuracy():
+    stmt = text(
+        """
+        SELECT
+        classifier_name,
+        ongoing_accuracy
+        FROM public.select_model_ongoing_accuracy()
+        """
+    )
+    resultset = db.session.execute(stmt)
+    rows = resultset.fetchall()
+
+    accuracy_dict = dict()
+
+    for row in rows:
+        classifier_name, ongoing_accuracy = row
+        accuracy_dict[classifier_name] = ongoing_accuracy
+
+    return accuracy_dict
