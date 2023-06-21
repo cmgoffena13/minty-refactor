@@ -46,6 +46,7 @@ class Classifier(db.Model):
         self.feature_count = None
         self.feature_rows = None
         self.ongoing_accuracy = None
+        self.features_remove = None
 
     def _test_accuracy(self, all_features, all_answers, training_split, random_state):
         features_train, features_test, answers_train, answers_test = train_test_split(
@@ -68,14 +69,18 @@ class Classifier(db.Model):
         encoder = OneHotEncoder(sparse_output=False)
 
         transactions = (
-            Transaction.query.with_entities(
-                Transaction.transaction_date,
-                Transaction.transaction_description,
-                Transaction.transaction_amount,
-                Transaction.custom_category_id,
-                Transaction.account_id,
+            (
+                Transaction.query.with_entities(
+                    Transaction.transaction_date,
+                    Transaction.transaction_description,
+                    Transaction.transaction_amount,
+                    Transaction.custom_category_id,
+                    Transaction.account_id,
+                )
             )
-        ).filter(Transaction.transaction_date >= date_filter)
+            .filter(Transaction.transaction_date >= date_filter)
+            .filter(Transaction.custom_category_id != -1)
+        )
 
         max_date = db.session.query(func.max(Transaction.transaction_date)).scalar()
         self.max_date = max_date
@@ -128,8 +133,10 @@ class Classifier(db.Model):
         # Trim features
         if feature_importance_threshold > 0:
             importance = self.classifier.feature_importances_
-            features_remove = np.where(importance < feature_importance_threshold)[0]
-            trimmed_features = np.delete(features, features_remove, axis=1)
+            self.features_remove = np.where(importance < feature_importance_threshold)[
+                0
+            ]
+            trimmed_features = np.delete(features, self.features_remove, axis=1)
             self.feature_rows, self.feature_count = trimmed_features.shape
             self.training_accuracy = self._test_accuracy(
                 all_features=trimmed_features,
