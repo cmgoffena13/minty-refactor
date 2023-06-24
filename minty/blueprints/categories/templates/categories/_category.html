@@ -3,7 +3,8 @@
 <span>
     <tbody>
         <tr>
-            <td>{{ category.custom_category_name }}</td>
+            <td>{{ category.custom_category_id}}</td>
+            <td><a href="{{ url_for('main.category_transactions', custom_category_id=category.custom_category_id) }}">{{ category.custom_category_name }}</a></td>
         </tr>
     </tbody>
 </span>

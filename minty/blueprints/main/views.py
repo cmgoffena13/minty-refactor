@@ -244,3 +244,69 @@ def all_transactions_search():
         predictions=predictions,
         route="main.all_transactions_search",
     )
+
+
+@main_bp.route(
+    "/category/transactions/<negative_int:custom_category_id>", methods=["GET", "POST"]
+)
+def category_transactions(custom_category_id):
+    page = request.args.get("page", 1, type=int)
+
+    transactions = get_transactions(page=page, custom_category_id=custom_category_id)
+
+    next_url = (
+        url_for(
+            "main.category_transactions",
+            page=transactions.next_num,
+            custom_category_id=custom_category_id,
+        )
+        if transactions.has_next
+        else None
+    )
+    prev_url = (
+        url_for(
+            "main.category_transactions",
+            page=transactions.prev_num,
+            custom_category_id=custom_category_id,
+        )
+        if transactions.has_prev
+        else None
+    )
+
+    forms = create_custom_category_forms(transactions=transactions)
+
+    transaction_json = convert_records_to_json(transactions.items)
+    predictions = make_batch_prediction(json_data=transaction_json)
+    if predictions is None:
+        flash("Received no predictions!")
+
+    transaction_data = zip(transactions, forms)
+
+    if request.method == "POST":
+        record_custom_category(forms=forms, db=db, predictions=predictions)
+
+        return redirect(
+            url_for(
+                "main.category_transactions",
+                page=page,
+                next_url=next_url,
+                prev_url=prev_url,
+                transaction_data=transaction_data,
+                transactions=transactions,
+                predictions=predictions,
+                route="main.category_transactions",
+                custom_category_id=custom_category_id,
+            )
+        )
+
+    return render_template(
+        template_name_or_list="main/transactions.html",
+        title="Category Transactions",
+        next_url=next_url,
+        prev_url=prev_url,
+        transaction_data=transaction_data,
+        transactions=transactions,
+        predictions=predictions,
+        custom_category_id=custom_category_id,
+        route="main.category_transactions",
+    )

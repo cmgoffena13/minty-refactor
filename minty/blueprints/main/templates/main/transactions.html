@@ -5,6 +5,8 @@
         <h1>Transactions - {{ account_name_header }}</h1>
     {% elif q %}
         <h1>Search Results</h1>
+    {% elif custom_category_id %}
+        <h1>Category</h1>
     {% else %}
         <h1> Transactions - All</h1>
     {% endif %}
@@ -12,7 +14,6 @@
 
     <table class="table table-condensed">
         <thead class="thead-dark">
-            <!--<th scope="col">TransactionID</th>-->
             <th scope="col">Transaction Date</th>
             {% if not account_name_header %}
             <th scope="col">Account Name</th>
@@ -20,7 +21,6 @@
             <th scope="col">Description</th>
             <th scope="col">Amount</th>
             <th scope="col">Prediction</th>
-            <!--<th scope="col">IsDebit</th>-->
             <th scope="col">Category</th>
         </thead>
     {% for transaction, form in transaction_data %}
@@ -54,7 +54,7 @@
               <li class="page-item active mr-2"><span class="page-link">{{ num }}</span></li>
             {% else %}
               <li class="page-item mr-2">
-                <a class="page-link" href="{{ url_for(route, title=title, page=num, next_url=next_url, prev_url=prev_url, transaction_data=transaction_data, transactions=transactions, account_name_header=account_name_header, account_id=account_id, q=q) }}">{{ num }}</a>
+                <a class="page-link" href="{{ url_for(route, title=title, page=num, next_url=next_url, prev_url=prev_url, transaction_data=transaction_data, transactions=transactions, account_name_header=account_name_header, account_id=account_id, q=q, custom_category_id=custom_category_id) }}">{{ num }}</a>
               </li>
             {% endif %}
             {% endfor %}

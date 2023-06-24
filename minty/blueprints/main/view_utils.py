@@ -13,7 +13,7 @@ from minty.models import (
 )
 
 
-def get_transactions(page, account_id=None, search_data=None):
+def get_transactions(page, account_id=None, search_data=None, custom_category_id=None):
     query = (
         Transaction.query.with_entities(
             Transaction.transaction_id,
@@ -23,7 +23,7 @@ def get_transactions(page, account_id=None, search_data=None):
             Transaction.is_debit,
             Transaction.account_id,
             Account.account_name,
-            CustomCategory.custom_category_id,
+            Transaction.custom_category_id,
             CustomCategory.custom_category_name,
         )
         .join(Account)
@@ -34,6 +34,8 @@ def get_transactions(page, account_id=None, search_data=None):
         query = query.filter(Transaction.transaction_description.match(search_data))
     if account_id:
         query = query.filter(Transaction.account_id == account_id)
+    if custom_category_id:
+        query = query.filter(Transaction.custom_category_id == custom_category_id)
 
     query = query.order_by(
         Transaction.transaction_date.desc(), Transaction.transaction_id.desc()

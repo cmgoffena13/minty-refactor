@@ -3,6 +3,12 @@ import functools
 import os
 import pstats
 
+from werkzeug.routing import BaseConverter
+
+
+class NegativeIntConverter(BaseConverter):
+    regex = r"-?\d+"
+
 
 # Wrap any route after the decorator route to test.
 def profile_view(func):

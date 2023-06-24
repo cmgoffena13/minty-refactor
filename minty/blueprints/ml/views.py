@@ -144,7 +144,10 @@ def predict_batch():
             ),
             axis=1,
         )
-        if current_model.features_remove is not None:
+        if (
+            hasattr(current_model, "features_remove")
+            and current_model.features_remove is not None
+        ):
             features = np.delete(features, current_model.features_remove, axis=1)
 
         prediction = current_model.classify(transaction_features=features)
