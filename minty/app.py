@@ -8,6 +8,7 @@ from flask_migrate import upgrade
 from flask_sqlalchemy.record_queries import get_recorded_queries
 from sqlalchemy import text
 
+from minty import jinja_filters
 from minty.blueprints.categories import categories_bp
 from minty.blueprints.chart_data import chart_data_bp
 from minty.blueprints.main import main_bp
@@ -15,7 +16,6 @@ from minty.blueprints.ml import ml_bp
 from minty.blueprints.view_utils import NegativeIntConverter
 from minty.config.settings import FlaskConfig
 from minty.extensions import bootstrap, db, debug_toolbar, migrate, profiler
-from minty import jinja_filters
 
 
 def create_app(config_class=FlaskConfig):
@@ -79,30 +79,8 @@ def create_app(config_class=FlaskConfig):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
 
-    # app.logger.info("Applying postgres setup scripts:")
-    postgres_files_short_path = "setup/postgres"
-    minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    postgres_files_full_path = os.path.join(minty_directory, postgres_files_short_path)
+        exec_db(app=app)
 
-    for file in os.listdir(postgres_files_full_path):
-        file_path = os.path.join(postgres_files_full_path, file)
-        # app.logger.info(f"    Executing: {file}")
-        query = text(open(file_path).read())
-        with app.app_context():
-            db.session.execute(query)
-            db.session.commit()
-
-    with app.app_context():
-        from minty.db_utils import (
-            populate_calendar_table,
-            populate_custom_category_table,
-            seed_db,
-        )
-
-        app.logger.info("Running postgres startup scripts")
-        populate_custom_category_table()
-        # seed_db()
-        populate_calendar_table()
     return app
 
 
@@ -120,4 +98,30 @@ def blueprints(app):
     app.register_blueprint(blueprint=chart_data_bp)
     app.register_blueprint(blueprint=ml_bp)
     app.register_blueprint(blueprint=categories_bp)
+    return None
+
+
+def exec_db(app):
+    postgres_files_short_path = "setup/postgres"
+    minty_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    postgres_files_full_path = os.path.join(minty_directory, postgres_files_short_path)
+
+    for file in os.listdir(postgres_files_full_path):
+        file_path = os.path.join(postgres_files_full_path, file)
+        query = text(open(file_path).read())
+        with app.app_context():
+            db.session.execute(query)
+            db.session.commit()
+
+    with app.app_context():
+        from minty.db_utils import (
+            populate_calendar_table,
+            populate_custom_category_table,
+            seed_db,
+        )
+
+        app.logger.info("Running postgres startup scripts")
+        populate_custom_category_table()
+        # seed_db()
+        populate_calendar_table()
     return None
