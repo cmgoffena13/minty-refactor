@@ -15,22 +15,15 @@ from minty.blueprints.ml import ml_bp
 from minty.blueprints.view_utils import NegativeIntConverter
 from minty.config.settings import FlaskConfig
 from minty.extensions import bootstrap, db, debug_toolbar, migrate, profiler
-from minty.templates.filters import (
-    format_boolean,
-    format_currency,
-    good_accuracy,
-    limit_characters,
-)
+from minty import jinja_filters
 
 
 def create_app(config_class=FlaskConfig):
     app = Flask(import_name=__name__)
     app.config.from_object(config_class)
 
-    app.jinja_env.filters["format_currency"] = format_currency
-    app.jinja_env.filters["limit_characters"] = limit_characters
-    app.jinja_env.filters["good_accuracy"] = good_accuracy
-    app.jinja_env.filters["format_boolean"] = format_boolean
+    for func in jinja_filters:
+        app.jinja_env.filters[f"{func.__name__}"] = func
 
     app.url_map.converters["negative_int"] = NegativeIntConverter
 
