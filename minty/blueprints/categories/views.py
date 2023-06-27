@@ -9,7 +9,7 @@ categories_bp = Blueprint(
 
 @categories_bp.route("/categories", methods=["GET"])
 def categories():
-    categories = CustomCategory.query.all()
+    categories = CustomCategory.query.order_by(CustomCategory.custom_category_id).all()
     category_data = categories
     return render_template(
         template_name_or_list="categories/categories.html", category_data=category_data

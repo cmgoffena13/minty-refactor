@@ -12,6 +12,16 @@ def format_currency(value):
     return "${:,.2f}".format(value)
 
 
+def format_boolean(value):
+    if bool(value) is None:
+        _value = value
+    if bool(value) is True:
+        _value = Markup('<span style="color:green;">' + str(value) + "</span>")
+    if bool(value) is False:
+        _value = Markup('<span style="color:red;">' + str(value) + "</span>")
+    return _value
+
+
 def limit_characters(value, length=30):
     _value = None
     if not isinstance(value, str):

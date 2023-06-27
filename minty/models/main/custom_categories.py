@@ -8,7 +8,7 @@ class CustomCategory(db.Model):
 
     custom_category_id = db.Column(INTEGER, primary_key=True)
     custom_category_name = db.Column(VARCHAR(100), unique=True, nullable=False)
-    locked = db.Column(BIT)
+    locked = db.Column(BOOLEAN)
 
     transactions = db.relationship(
         "Transaction",
