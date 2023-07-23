@@ -39,10 +39,10 @@ def pay_period():
             "date_actual": pay_period.date_actual.strftime("%Y-%m-%d"),
             "rolling_transactions_amounts_p1": int(
                 pay_period.rolling_transactions_amounts_p1
-            ),
+            ) if pay_period.rolling_transactions_amounts_p1 else None,
             "rolling_transactions_amounts_p2": int(
                 pay_period.rolling_transactions_amounts_p2
-            ),
+            ) if pay_period.rolling_transactions_amounts_p2 else None,
             "break_even": int(pay_period.break_even),
         }
         for pay_period in pay_period_data
