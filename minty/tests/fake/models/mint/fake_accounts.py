@@ -12,6 +12,7 @@ class FakeAccount(Account):
 
     def generate_fake_id(self):
         self.account_id = fake.unique.random_number(digits=6)
+        self.is_operation_account = True
 
     def generate_fake_data(self):
         db.session.add(self)

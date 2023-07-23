@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 
 from minty.blueprints.main.forms import RefreshData, SearchForm
 from minty.blueprints.main.tasks import mint_pull
@@ -73,7 +73,10 @@ def all_transactions():
     forms = create_custom_category_forms(transactions=transactions)
 
     transaction_json = convert_records_to_json(transactions.items)
-    predictions = make_batch_prediction(json_data=transaction_json)
+    if not current_app.testing:
+        predictions = make_batch_prediction(json_data=transaction_json)
+    else:
+        predictions = None
     if predictions is None:
         flash("Received no predictions!")
 
@@ -142,7 +145,10 @@ def account_transactions(account_id):
     forms = create_custom_category_forms(transactions=transactions)
 
     transaction_json = convert_records_to_json(transactions.items)
-    predictions = make_batch_prediction(json_data=transaction_json)
+    if not current_app.testing:
+        predictions = make_batch_prediction(json_data=transaction_json)
+    else:
+        predictions = None
     if predictions is None:
         flash("Received no predictions!")
 
@@ -210,7 +216,10 @@ def all_transactions_search():
     forms = create_custom_category_forms(transactions=transactions)
 
     transaction_json = convert_records_to_json(transactions.items)
-    predictions = make_batch_prediction(json_data=transaction_json)
+    if not current_app.testing:
+        predictions = make_batch_prediction(json_data=transaction_json)
+    else:
+        predictions = None
     if predictions is None:
         flash("Received no predictions!")
 
