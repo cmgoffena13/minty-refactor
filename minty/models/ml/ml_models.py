@@ -35,6 +35,7 @@ class Classifier(db.Model):
     def __init__(self, classifier_name):
         self.vectorizer = CountVectorizer()
         self.classifier = DecisionTreeClassifier()
+        self.encoder = OneHotEncoder(sparse_output=False)
         self.is_trained = False
         self.training_accuracy = None
         self.classifier_name = classifier_name
@@ -66,7 +67,6 @@ class Classifier(db.Model):
         transaction_amounts = []
         categories = []
         account_ids = []
-        encoder = OneHotEncoder(sparse_output=False)
 
         transactions = (
             (
@@ -111,7 +111,7 @@ class Classifier(db.Model):
             ),
             axis=1,
         )
-        all_answers = encoder.fit_transform(np.array(categories).reshape(-1, 1))
+        all_answers = self.encoder.fit_transform(np.array(categories).reshape(-1, 1))
 
         return all_features, all_answers
 
@@ -152,7 +152,7 @@ class Classifier(db.Model):
         if not self.is_trained:
             raise Exception("Classifier not trained yet.")
         predicted_category_encoded = self.classifier.predict(transaction_features)
-        predicted_category = np.argmax(predicted_category_encoded)
+        predicted_category = self.encoder.inverse_transform(predicted_category_encoded)[0][0]
         return predicted_category
 
     def save_model(self):
